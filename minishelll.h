@@ -30,19 +30,27 @@ typedef struct s_comands
 typedef struct s_shell
 {
     char **env;
-    char *input[BUFFER_SIZE];
+    char *input;
+    char *prompt;
     t_comands   cmd;
 } t_shell;
 
 //============ FUNCTIONS ===============
 
 // inicializon shellin
-int init_shell(char **enviroment);
+int init_shell(t_shell *msh, char **enviroment);
 
 //duplikon enviroment variables
 char **dub_env(char **enviroment);
+void free_env(char **env);
+
 
 //starton loopen e shell
 void start_shell(t_shell *msh);
 
+// prompt;
+char *create_prompt(void);
+
+// the loop
+void shell_loop(t_shell *msh); 
 #endif

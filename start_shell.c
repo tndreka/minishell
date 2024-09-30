@@ -1,21 +1,41 @@
 #include "minishelll.h"
 
-void start_shell(t_shell *msh)
+void shell_loop(t_shell *msh)
 {
-    t_shell msh;
-    char cwd[1042]; //buffer per direktorin aktuale
-    char prompt = "my_shell~";
 
     while (1)
     {
-        //Marr direktorin aktuale
-        if (getcwd(cwd, sizeof(cwd) != NULL))
+        if(isatty(STDIN_FILENO))
         {
-            /* code */
-        }
-        
-    }
-    
+            msh->prompt = create_prompt();
+            if(!msh->prompt)
+            {
+                perror("prompt loop failed\n");
+                break;
+            }
 
+        }
+        else
+            msh->prompt = NULL;
+        msh->input = readline(msh->prompt);
+        if (msh->input == NULL) 
+        {      
+            free(msh->prompt);
+            break ;
+        }
+        if( ft_strncmp(msh->input, "exit", 4) == 0 )
+        {
+            
+            free(msh->input);
+            free(msh->prompt);
+            break ;
+        }
+        if (msh->input)
+            add_history(msh->input);
+        printf("print command line : %s\n", msh->input);        
+        free(msh->input);
+        if(msh->prompt)
+            free(msh->prompt);
+    }
 }
 

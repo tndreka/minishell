@@ -7,6 +7,10 @@ char **dub_env(char **enviroment)
 
     i = 0;
     //hapi i pare numrojme variablat
+    if (!enviroment)
+    {
+        printf("no enviroment\n");
+    }
     while (enviroment[i])
     {
         i++;
@@ -35,7 +39,23 @@ char **dub_env(char **enviroment)
             free(new_env);
             return(NULL);
         }
-        new_env[j] = NULL;
+        j++;
     }
+    new_env[j] = NULL;
     return(new_env);
+}
+
+void free_env(char **env)
+{
+    size_t i;
+
+    i = 0;
+    if (!env)
+        return ;
+    while (env[i])
+    {
+        free(env[i]);
+        i++;
+    }
+    free(env);
 }
