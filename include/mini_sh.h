@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 10:48:37 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/03 22:37:13 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/10/11 17:37:34 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,55 +28,31 @@
 # define BUFFER_SIZE 10000
 #endif
 
-// STRUCT's
-/* === comand === */
-/* contains info of the comand
-*/
-
 //=========== STRUCTS =====================
 
 typedef enum e_token {
-	TOKEN_COMMAND,
-	TOKEN_ARGUMENT,
-	TOKEN_WORD,
-	TOKEN_PIPE,
-	TOKEN_RIDIRECTION_LESS,
-	TOKEN_RIDIRECTION_LESS_LESS, 	
-	TOKEN_RIDIRECTION_GREAT, 	
-	TOKEN_RIDIRECTION_GREAT_GREAT,
-	TOKEN_SINGLE_QUOTE,
-	TOKEN_DOUBLE_QUOTE,
-	TOKEN_UNKNOWN
+    COMMAND,
+    FILENAME,
+    ARGUMENT,
+    SINGLE_QUOTE,
+    DOUBLE_QUOTE,
+    PIPE,
+    REDIRIN,
+    REDIROUT,
+    REDIROUTAPP,
+    HEREDOC,
+    DELIMITER,
+    STRING,
+    APPEND,
+    UNKNOWN
 }	t_token;
-
-
-/*
-	LEXING STRUCT
-*/
-
-/*
-	EXECUTION 
-typedef struct s_redirect {
-	char *data;
-	e_token type;
-}
-
-typedef struct s_runconfig {
-	char *cmd;
-	int argc;
-	char **args;
-	t_list *redirect;
-	struct s_runconfig* pipe;
-}
-
-*/
 
 
 typedef struct s_lexer
 {
-	char				*data;
-	t_token				type;
-	struct s_lexer		*next;
+    char				*data;
+    t_token				type;
+    struct s_lexer		*next;
 }	t_lexer;
 
 typedef struct t_simple_command
@@ -121,13 +97,13 @@ typedef struct t_minishell
     int		infd;
     int		exit_code;
     //bool	success;
-   // bool	append_mode;
+    // bool	append_mode;
 }		t_msh;
 
 
 t_msh *init_minishell(int ac, char *av[], char *envp[]);
 t_msh *set_parameters(t_msh *msh);
-void minishell_parser(char **prompt, t_msh **msh);
+void minishell_parser(char *prompt, t_msh *msh);
 
 
 //loop
@@ -139,7 +115,7 @@ void free_env(t_msh *msh);
 
 // LEXING
 int ft_isspace(char c); // chec if it is a white space
- 
+
 int is_this(char c);  // checks the delimeter
 
 t_token get_token_type(char c); // check what type of token is

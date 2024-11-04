@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:01:48 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/03 22:36:33 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/10/05 15:46:19 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,128 +22,128 @@
 
 int is_this(char c)
 {
-	return (c == '|' || c == '>' || c == '<');
+    return (c == '|' || c == '>' || c == '<');
 }
 
 /*
-	this function creates a token 
+	this function creates a token
 	and sets the token type
 */
 
 t_token get_token_type(char c)
 {
-	if (c == '|')
-		return TOKEN_PIPE;
-	else if (c == '<')
-		return TOKEN_RIDIRECTION_LESS;
-	else if (c == '>')
-		return TOKEN_RIDIRECTION_GREAT;
-	else if (ft_strncmp(&c, "<<", 2) == 0)
-		return TOKEN_RIDIRECTION_LESS_LESS;
-	else if (ft_strncmp(&c, ">>", 2) == 0)
-		return TOKEN_RIDIRECTION_GREAT_GREAT;
-	else
-		return TOKEN_UNKNOWN;
+    if (c == '|')
+        return PIPE;
+    else if (c == '<')
+        return REDIROUT;
+    else if (c == '>')
+        return REDIRIN;
+    else if (ft_strncmp(&c, "<<", 2) == 0)
+        return ;
+    else if (ft_strncmp(&c, ">>", 2) == 0)
+        return ;
+    else
+        return ;
 }
 
 
 t_lexer *create_tok(char *data, t_token type)
 {
-	t_lexer *token;
+    t_lexer *token;
 
-	token = malloc (sizeof(t_lexer));
-	if (token == NULL)
-	{
-		perror("Malloc for tokens failed--->create_tok()\n");
-		return NULL;
-	}
-	token->data = ft_strdup(data);
-	token->type = type;
-	token->next = NULL;
-	return (token);
+    token = malloc (sizeof(t_lexer));
+    if (token == NULL)
+    {
+        perror("Malloc for tokens failed--->create_tok()\n");
+        return NULL;
+    }
+    token->data = ft_strdup(data);
+    token->type = type;
+    token->next = NULL;
+    return (token);
 }
 
 void add_token(t_lexer **tokens, t_lexer *new_token)
 {
-	t_lexer *temp;
-	
-	if(!*tokens)
-		*tokens = new_token;
-	else
-	{
-		temp = *tokens;
-		while (temp->next)
-		{
-			temp = temp->next;
-		}		
-		temp->next = new_token;	
-	}
+    t_lexer *temp;
+
+    if(!*tokens)
+        *tokens = new_token;
+    else
+    {
+        temp = *tokens;
+        while (temp->next)
+        {
+            temp = temp->next;
+        }
+        temp->next = new_token;
+    }
 }
 
 int ft_isspace(char c)
 {
-	return (c == ' ');
+    return (c == ' ');
 }
 
 char *create_redir_arr(char c)
 {
-	char *arr;
+    char *arr;
 
-	arr = malloc(2 * sizeof(char));
-	if (!arr)
-	{
-		perror("malloc of red_arr failed->> create_red_arr[]");
-		return NULL;
-	}
-	arr[0] = c;
-	arr[1] = '\0';
-	return arr;
+    arr = malloc(2 * sizeof(char));
+    if (!arr)
+    {
+        perror("malloc of red_arr failed->> create_red_arr[]");
+        return NULL;
+    }
+    arr[0] = c;
+    arr[1] = '\0';
+    return arr;
 }
 
 void print_token(t_lexer *tokens)
 {
-	char *str;
-	//printf("ERROR HERE\n");
-	while (tokens)
-	{
-		//printf("ERROR HERE1\n");
-		if (tokens->type == TOKEN_WORD)
-		{
-			//printf("ERROR HERE2\n");
-			str = "WORD";
-		}
-		else if (tokens->type == TOKEN_PIPE)
-		{
-			//printf("ERROR HERE3\n");
-			str = "PIPE";
-		}
-		else if (tokens->type == TOKEN_RIDIRECTION_LESS)
-		{
-			//printf("ERROR HERE4\n");
-			str = "RIDIRECTION_LESS";
-		}
-		else if (tokens->type == TOKEN_RIDIRECTION_GREAT)
-		{
-			//printf("ERROR HERE4\n");
-			str = "RIDIRECTION_GREAT";
-		}
-		else if (tokens->type == TOKEN_RIDIRECTION_LESS_LESS)
-		{
-			//printf("ERROR HERE4\n");
-			str = "RIDIRECTION_LESS_LESS";
-		}
-		else if (tokens->type == TOKEN_RIDIRECTION_GREAT_GREAT)
-		{
-			//printf("ERROR HERE4\n");
-			str = "RIDIRECTION_GREAT_GREAT";
-		}
-		else
-		{
-			//printf("ERROR HERE5\n");
-			str = "UNKNOWN";
-		}
-		//printf("ERROR HERE666\n");
-		printf("Token : %s  Type: %s\n" , tokens->data, str);
-		tokens = tokens->next;
-	}
+    char *str;
+    //printf("ERROR HERE\n");
+    while (tokens)
+    {
+        //printf("ERROR HERE1\n");
+        if (tokens->type == TOKEN_WORD)
+        {
+            //printf("ERROR HERE2\n");
+            str = "WORD";
+        }
+        else if (tokens->type == TOKEN_PIPE)
+        {
+            //printf("ERROR HERE3\n");
+            str = "PIPE";
+        }
+        else if (tokens->type == TOKEN_RIDIRECTION_LESS)
+        {
+            //printf("ERROR HERE4\n");
+            str = "RIDIRECTION_LESS";
+        }
+        else if (tokens->type == TOKEN_RIDIRECTION_GREAT)
+        {
+            //printf("ERROR HERE4\n");
+            str = "RIDIRECTION_GREAT";
+        }
+        else if (tokens->type == TOKEN_RIDIRECTION_LESS_LESS)
+        {
+            //printf("ERROR HERE4\n");
+            str = "RIDIRECTION_LESS_LESS";
+        }
+        else if (tokens->type == TOKEN_RIDIRECTION_GREAT_GREAT)
+        {
+            //printf("ERROR HERE4\n");
+            str = "RIDIRECTION_GREAT_GREAT";
+        }
+        else
+        {
+            //printf("ERROR HERE5\n");
+            str = "UNKNOWN";
+        }
+        //printf("ERROR HERE666\n");
+        printf("Token : %s  Type: %s\n" , tokens->data, str);
+        tokens = tokens->next;
+    }
 }

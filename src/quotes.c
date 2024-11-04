@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 19:13:14 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/03 22:36:40 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/10/11 16:24:13 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 char *handle_quote(char *prompt)
 {
 
-	char *end;
-	char *string;
+    char *end;
+    char *string;
 
-	end = ft_strchr(prompt, 34);
+    end = ft_strchr(prompt, 34);
     string = malloc(ft_strlen(prompt));
     if(!string)
     {
