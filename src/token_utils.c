@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
+/*   By: baylozzi <baylozzi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:01:48 by tndreka           #+#    #+#             */
-/*   Updated: 2024/10/05 15:46:19 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/05 13:36:51 by baylozzi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,11 @@ t_token get_token_type(char c)
     else if (c == '>')
         return REDIRIN;
     else if (ft_strncmp(&c, "<<", 2) == 0)
-        return ;
+        return HEREDOC;
     else if (ft_strncmp(&c, ">>", 2) == 0)
-        return ;
+        return  APPEND;
     else
-        return ;
+        return UNKNOWN;
 }
 
 
@@ -107,35 +107,35 @@ void print_token(t_lexer *tokens)
     while (tokens)
     {
         //printf("ERROR HERE1\n");
-        if (tokens->type == TOKEN_WORD)
+        if (tokens->type == COMMAND)
         {
             //printf("ERROR HERE2\n");
-            str = "WORD";
+            str = "COMMAND";
         }
-        else if (tokens->type == TOKEN_PIPE)
+        else if (tokens->type == PIPE)
         {
             //printf("ERROR HERE3\n");
             str = "PIPE";
         }
-        else if (tokens->type == TOKEN_RIDIRECTION_LESS)
+        else if (tokens->type == REDIROUT)
         {
             //printf("ERROR HERE4\n");
-            str = "RIDIRECTION_LESS";
+            str = "RIDIRECTION_OUT";
         }
-        else if (tokens->type == TOKEN_RIDIRECTION_GREAT)
+        else if (tokens->type == REDIRIN)
         {
             //printf("ERROR HERE4\n");
-            str = "RIDIRECTION_GREAT";
+            str = "RIDIRECTION_IN";
         }
-        else if (tokens->type == TOKEN_RIDIRECTION_LESS_LESS)
+        else if (tokens->type == APPEND)
         {
             //printf("ERROR HERE4\n");
-            str = "RIDIRECTION_LESS_LESS";
+            str = "APPEND";
         }
-        else if (tokens->type == TOKEN_RIDIRECTION_GREAT_GREAT)
+        else if (tokens->type == APPEND)
         {
             //printf("ERROR HERE4\n");
-            str = "RIDIRECTION_GREAT_GREAT";
+            str = "APPEND";
         }
         else
         {

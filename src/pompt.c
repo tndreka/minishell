@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pompt.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
+/*   By: baylozzi <baylozzi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 16:16:58 by tndreka           #+#    #+#             */
-/*   Updated: 2024/10/05 15:36:03 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/05 13:38:05 by baylozzi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,13 @@ void prompt(t_msh *msh)
     }
 }
 
-t_lexer *check_prompt(char *prompt, t_msh *msh)
-{
-    t_lexer             *head;
+// t_lexer *check_prompt(char *prompt, t_msh *msh)
+// {
+//     t_lexer             *head;
 
-    head = NULL;
-    if(ft_strlen(prompt) > 0)
-        add_history(prompt);
-    head = tokenize_prompt(prompt, msh);
-    return (head);
-}
+//     head = NULL;
+//     if(ft_strlen(prompt) > 0)
+//         add_history(prompt);
+//     head = tokenize_prompt(prompt, msh);
+//     return (head);
+// }
