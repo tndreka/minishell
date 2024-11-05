@@ -3,21 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baylozzi <baylozzi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 15:09:14 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/05 13:58:23 by baylozzi         ###   ########.fr       */
+/*   Updated: 2024/11/05 14:35:11 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/mini_sh.h"
 
-
-void redirection(const char *prompt, t_lexer *current, t_lexer **head, int *i);
-
-void redirection_less(const char *prompt, t_lexer **head, t_lexer **current, int *i);
-
-void double_qoute(char *prompt,char *quote_end, t_lexer **head, t_lexer **current, int *i);
 
 t_lexer *check_prompt(char *prompt, t_msh *msh);
 
@@ -27,19 +21,35 @@ t_lexer *tokenize_prompt(char *prompt, t_msh *msh);
 void minishell_parser(char *prompt, t_msh *msh)
 {
     t_lexer     *token_list = NULL;
-    //t_lexer     *headof_list;
-    //t_token     type;
+    t_lexer     *headof_list;
+    t_table     *table = NULL;
     (void)msh;
 
     token_list = check_prompt(prompt, msh);
+    headof_list = token_list;
     //token_list = lexer(prompt);
-    //headof_list = token_list;
     if(NULL == token_list)
         return;
-    if(token_list)
+    if(!token_list)
     {
-        print_token(token_list);
+        return ;
+        if (token_list)
+        {
+            print_token(token_list);
+        }
     }
+    while (token_list)
+    {
+        i = pass_to_table(&token_list, msh, &table);
+        if (-1 == i)
+        {
+            free_everything(msh, headof_list, table);
+            break;
+        }
+    }
+    msh->table = table;
+    msh->table_head = table;
+    
 }
 
 t_lexer *check_prompt(char *prompt, t_msh *msh)
@@ -53,121 +63,26 @@ t_lexer *check_prompt(char *prompt, t_msh *msh)
     return (head);
 }
 
-t_lexer *tokenize_prompt(char *prompt, t_msh *msh)
+int pass_to_table(t_lexer **token_list, t_msh *msh, t_table **table)
 {
-   char *buffer;
-   t_lexer *head = NULL;
-   t_lexer *current = NULL;
-   size_t len = 0;
-   (void)msh;
-
-   //char *tmp;
-   char *quote_end = NULL;
-   int i = 0;
-   //int quote_len = 0;
-
-   while (prompt[i])
-   {
-       while (prompt[i] && ft_isspace(prompt[i]))
-           i++;
-       if(prompt[i] == '|')
-       {
-           current = create_tok("|", PIPE);
-           add_token(&head, current);
-           i++;
-       }
-       else if (prompt[i] =='\"')
-       {
-           i++;
-           double_qoute(prompt ,quote_end, &head, &current, &i);
-       }
-       else if (prompt[i] == '>')
-       {
-           redirection(prompt, current, &head, &i);
-       }
-       else if (prompt[i] == '<')
-       {
-           redirection_less(prompt, &head, &current, &i);
-       }
-       else if (prompt[i])
-       {
-           len = 0;
-           while (prompt[i] && !ft_isspace(prompt[i]) && prompt[i] != '|' && prompt[i] != '<' && prompt[i] != '<')
-           {
-               len++;
-               i++;
-           }
-           buffer = malloc((len + 1) * sizeof(char));
-           if(!buffer)
-           {
-               perror("malloc for buffer at lexer() FAILED !!");
-               return NULL;
-
-           }
-           ft_strncpy(buffer, prompt + (i - len) , len);
-           buffer[len] = '\0';
-           current = create_tok(buffer, COMMAND);
-           add_token(&head, current);
-           free(buffer);
-       }
-   }
-   return head;
-}
-
-void double_qoute(char *prompt, char *quote_end, t_lexer **head, t_lexer **current, int *i)
-{
-   //int quote_len = 0;
-   char *tmp;
-   quote_end = ft_strchr((&prompt[(*i)]) , '\"');
-   if (quote_end)
-   {
-       //quote_len = quote_end - (prompt + (*i) - 1);
-       tmp = handle_quote(&prompt[(*i)]);
-       (*current) = create_tok(tmp, STRING);
-       add_token(head, (*current));
-       free(tmp);
-       (*i) = quote_end - prompt + 1;
-   }
-}
-
-void redirection_less(const char *prompt, t_lexer **head, t_lexer **current, int *i) {
-   if (prompt[(*i) + 1] == '<')
-   {
-       (*current) = create_tok(create_redir_arr(prompt[(*i)]), HEREDOC);
-       add_token(head, (*current));
-       (*i) += 2;
-   }
-   else
-   {
-       (*current) = create_tok(create_redir_arr(prompt[(*i)]), REDIRIN);
-       add_token(head, (*current));
-       (*i)++;
-   }
-}
-
-void redirection(const char *prompt, t_lexer *current, t_lexer **head, int *i) {
-   if (prompt[(*i) + 1] == '>')
-   {
-       current = create_tok(create_redir_arr(prompt[(*i)]), APPEND);
-       add_token(head, current);
-       (*i) += 2;
-   }
-   else
-   {
-       current = create_tok(create_redir_arr(prompt[(*i)]), REDIROUT);
-       add_token(head, current);
-       (*i)++;
-   }
-}
-
-void free_token(t_lexer *head)
-{
-   t_lexer *tmp;
-   while (head)
-   {
-       tmp = head;
-       head = head->next;
-       free(tmp->data);
-       free(tmp);
-   }
+    t_lexer     *token;
+    t_cmd       *new_command;
+       
+    token = (*token_list);
+    new_command = malloc(sizeof(t_cmd));
+    if (NULL == new_command)
+    {
+        printf("allocation of the new_command failed\n");
+        return -1;
+    }
+    new_command->next = NULL;
+    if (token->type == COMMAND)
+    {
+        new_command->content = ft_strdup(token->data);
+        if(NULL == new_command)
+        {
+            free(new_command);
+            return -1;
+        }
+    }
 }
