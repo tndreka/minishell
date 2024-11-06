@@ -3,6 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+/*   By: tndreka <tndreka@student.42heilbronn.de>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/06 15:22:02 by tndreka           #+#    #+#             */
+/*   Updated: 2024/11/06 16:16:26 by tndreka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 15:09:14 by tndreka           #+#    #+#             */
@@ -17,18 +29,20 @@ t_lexer *check_prompt(char *prompt, t_msh *msh);
 
 t_lexer *tokenize_prompt(char *prompt, t_msh *msh);
 
-int pass_to_table(t_lexer **token_list, t_msh *msh, t_table **table);
+size_t pass_to_table(t_lexer *token_list, t_msh *msh, t_table **table);
+
+size_t tri_to_table_pipe(t_lexer *token_list, t_msh *msh, t_table *table)
 
 void minishell_parser(char *prompt, t_msh *msh)
 {
     t_lexer     *token_list = NULL;
-    //t_lexer     *headof_list;
+    t_lexer     *headof_list;
     t_table     *table = NULL;
-    int         i;
+    size_t         i;
 
     i = 0;
     token_list = check_prompt(prompt, msh);
-    //headof_list = token_list;
+    headof_list = token_list;
     //token_list = lexer(prompt);
     if(NULL == token_list)
         return;
@@ -42,16 +56,10 @@ void minishell_parser(char *prompt, t_msh *msh)
     }
     while (token_list)
     {
-        i = pass_to_table(&token_list, msh, &table);
-        if (-1 == i)
-        {
-            //free_everything(msh, headof_list, table);
-            break;
-        }
+        i = pass_to_table(token_list, msh, &table);
     }
     msh->table = table;
     msh->table_head = table;
-    
 }
 
 t_lexer *check_prompt(char *prompt, t_msh *msh)
@@ -65,81 +73,122 @@ t_lexer *check_prompt(char *prompt, t_msh *msh)
     return (head);
 }
 
-int pass_to_table(t_lexer **token_list, t_msh *msh, t_table **table)
+size_t pass_to_table(t_lexer *token_list, t_msh *msh, t_table **table)
 {
-    t_lexer     *token;
-    t_cmd       *new_command;
+    t_lexer *token;
+    size_t count;
 
-    (void)msh;
-    (void)table;
-    token = (*token_list);
-    new_command = malloc(sizeof(t_cmd));
-    if (NULL == new_command)
+    token = *token_list->type;
+    count = 0;
+
+    while(token)
     {
-        printf("allocation of the new_command failed\n");
-        return -1;
-    }
-    new_command->next = NULL;
-    if (token->type == COMMAND)
-    {
-        new_command->content = ft_strdup(token->data);
-        if(NULL == new_command)
+        if(token->type == PIPE)
         {
-            free(new_command);
-            return -1;
+            if(trip_to_table_pipe(token, msh, *table) == -1)
+                return count;
         }
-    }
-    else if (token->type == REDIRIN)
-    {
-        new_command->content = ft_strdup(token->data);
-        if (NULL == new_command)
-        {
-            free(new_command);
-            return -1;
+        else if (token->type == REDIRIN || token->type ==  REDIROUT || token->type == REDIROUTAPP)
         }
-    }
-    else if (token->type == REDIROUT)
-    {
-        new_command->content = ft_strdup(token->data);
-        if (NULL == new_command)
+            handle_type_of_redir(token, msh);
         {
-            free(new_command);
-            return -1;
+        else if (token->type == HEREDOC || token->type ==  APPEND)
+        {
+            if(handle_type_of_redir_type2(token, msh) == -1);
+                return count;
         }
+        else if (token->type == STRING || token->type == SINGLE_QUOTE)
+                tirp_to_table_quotes(token, msh);
+        else
+            return count;
+
+        //add_tokens_to_table(table, token);
+        count++;
+        token = token->next
     }
-    else if (token->type == HEREDOC)
-    {
-        new_command->content = ft_strdup(token->data);
-        if (NULL == new_command)
-        {
-            free(new_command);
-            return -1;
-        }
-    }
-    else if (token->type == APPEND)
-    {
-        new_command->content = ft_strdup(token->data);
-        if (NULL == new_command)
-        {
-            free(new_command);
-            return -1;
-        }
-    }
-    else if (token->type == STRING)
-    {
-        new_command->content = ft_strdup(token->data);
-        if(NULL == new_command)
-        {
-            free(new_command);
-            return -1;
-        }       
-    }
-    else if (token->type == PIPE)
-    {
-        if(NULL == new_command)
-    
-            return -1;
-    
-    }
-    return 0;
+    return count;
 }
+
+size_t tri_to_table_pipe(t_lexer *token_list, t_msh *msh, t_table *table)
+{
+
+}
+
+
+//{
+//    t_lexer     *token;
+//    t_cmd       *new_command;
+//
+//    (void)msh;
+//    (void)table;
+//    token = (*token_list);
+//    new_command = malloc(sizeof(t_cmd));
+//    if (NULL == new_command)
+//    {
+//        printf("allocation of the new_command failed\n");
+//        return -1;
+//    }
+//    new_command->next = NULL;
+//    if (token->type == COMMAND)
+//    {
+//        new_command->content = ft_strdup(token->data);
+//        if(NULL == new_command)
+//        {
+//            free(new_command);
+//            return -1;
+//        }
+//    }
+//    else if (token->type == REDIRIN)
+//    {
+//        new_command->content = ft_strdup(token->data);
+//        if (NULL == new_command)
+//        {
+//            free(new_command);
+//            return -1;
+//        }
+//    }
+//    else if (token->type == REDIROUT)
+//    {
+//        new_command->content = ft_strdup(token->data);
+//        if (NULL == new_command)
+//        {
+//            free(new_command);
+//            return -1;
+//        }
+//    }
+//    else if (token->type == HEREDOC)
+//    {
+//        new_command->content = ft_strdup(token->data);
+//        if (NULL == new_command)
+//        {
+//            free(new_command);
+//            return -1;
+//        }
+//    }
+//    else if (token->type == APPEND)
+//    {
+//        new_command->content = ft_strdup(token->data);
+//        if (NULL == new_command)
+//        {
+//            free(new_command);
+//            return -1;
+//        }
+//    }
+//    else if (token->type == STRING)
+//    {
+//        new_command->content = ft_strdup(token->data);
+//        if(NULL == new_command)
+//        {
+//            free(new_command);
+//            return -1;
+//        }
+//    }
+//    else if (token->type == PIPE)
+//    {
+//        if(NULL == new_command)
+//
+//            return -1;
+//
+//    }
+//    return 0;
+//}

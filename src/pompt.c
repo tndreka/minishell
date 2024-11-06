@@ -27,9 +27,7 @@ void prompt(t_msh *msh)
     {
         prompt = readline("Minishell~ ");
         if (prompt == NULL)
-        {
             break ;
-        }
         minishell_parser(prompt, msh);
         if(ft_strncmp(prompt, "exit", 4) == 0)
         {
@@ -39,14 +37,3 @@ void prompt(t_msh *msh)
         free(prompt);
     }
 }
-
-// t_lexer *check_prompt(char *prompt, t_msh *msh)
-// {
-//     t_lexer             *head;
-
-//     head = NULL;
-//     if(ft_strlen(prompt) > 0)
-//         add_history(prompt);
-//     head = tokenize_prompt(prompt, msh);
-//     return (head);
-// }
