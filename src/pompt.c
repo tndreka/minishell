@@ -20,7 +20,6 @@
 void prompt(t_msh *msh)
 {
     char	*prompt;
-    //size_t i = 0;
     if (!isatty(STDIN_FILENO))
         return ;
     while (1)
@@ -29,11 +28,17 @@ void prompt(t_msh *msh)
         if (prompt == NULL)
             break ;
         minishell_parser(prompt, msh);
-        if(ft_strncmp(prompt, "exit", 4) == 0)
+        if (minish->table && handle_redirections(minish) != -1)
         {
-            free(prompt); // free the exit part
-            break;
+            if (!minish->table->rightpipe && check_builtin(minish))
+                executor(minish);
+            else
+                mini_main(minish);
         }
-        free(prompt);
+        restore_redirections(minish);
+        if (minish->table_head)
+            free_table(minish);
     }
+    free_mini(minish, false);
+    return (0);
 }

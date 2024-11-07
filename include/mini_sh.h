@@ -16,8 +16,15 @@
 //============ HEADER FILES =============
 # include "libft/libft.h"
 # include <stdio.h>
-# include <unistd.h>
-# include <stdlib.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <signal.h>
+# include <sys/stat.h>
+# include <dirent.h>
+# include <string.h>
+# include <sys/ioctl.h>
+# include <termios.h>
+# include <curses.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -63,8 +70,8 @@ typedef struct t_simple_command
 
 typedef struct t_command_table
 {
-    //bool						leftpipe;
-    //bool						rightpipe;
+    bool						leftpipe;
+    bool						rightpipe;
     t_cmd						*command;
     t_cmd						*cmd_head;
     struct t_command_table		*next;
@@ -85,7 +92,7 @@ typedef struct t_command_table
 //	t_token type;
 //}	t_msh;
 
-typedef struct t_minishell
+typedef struct s_minishell
 {
     t_table	*table;
     t_table	*table_head;
@@ -96,8 +103,8 @@ typedef struct t_minishell
     char	*in_redir;
     int		infd;
     int		exit_code;
-    //bool	success;
-    // bool	append_mode;
+    bool	success;
+    bool	append_mode;
 }		t_msh;
 
 
@@ -133,4 +140,38 @@ void free_token(t_lexer *head);
 void print_token(t_lexer *tokens);
 
 char *handle_quote(char *start);
+
+
+void		executor(t_msh *mini);
+void		handle_echo(t_msh *mini);
+void		handle_pwd(t_msh *mini);
+void		handle_cd(t_msh *mini);
+void		handle_env(t_msh *mini);
+void		handle_export(t_msh *mini);
+void		handle_unset(t_msh *mini);
+void        handle_exit(t_msh *mini);
+void		execute_file(t_msh *mini);
+void		check_path(t_msh *mini);
+char		**list2array(t_msh *mini);
+void		free_arr(char **arr);
+void		swap_vars(char **newenv);
+void		replace_env(t_msh *mini, char *path, char *env);
+char		*ft_getcwd(t_msh *mini);
+char		**create_arg_lst(t_msh *mini);
+char		*ft_check_var_lst(t_msh *mini, char *var);
+void		add_var_to_list(t_msh *mini);
+void    	mini_main(t_msh *mini);
+int			handle_redirections(t_msh *mini);
+void		restore_redirections(t_msh *mini);
+t_msh		*init_mini_vars(int argc, char **argv, char **envp);
+bool		ft_isnumber(char *content);
+void		free_mini(t_msh *mini, bool keep_env);
+void        sigint_handler(int sig);
+void	    handle_signals(void);
+int         check_existing_var(char *newvar, t_msh *mini);
+void    	handle_shlvl(t_msh *mini, char sign);
+bool	    check_nl(char *content);
+bool		check_builtin(t_msh *minish);
+
+
 #endif
