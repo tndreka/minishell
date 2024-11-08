@@ -31,25 +31,6 @@
 */
 
 
-//void    leaks(void)
-//{
-//    system("leaks Minishell");
-//}
-//int main(int ac, char *av[], char *envp[])
-//{
-//	t_msh msh;
-// 	(void)ac;
-//	(void)av;
-//	(void)envp;
-//
-//
-//	msh.env = create_env(envp);
-//	atexit(leaks);
-//	prompt(&msh);
-//	free_env(&msh);
-//	return(0);
-//}
-
 
 int main(int ac, char *av[], char *envp[])
 {

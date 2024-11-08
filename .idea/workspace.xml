@@ -26,16 +26,9 @@
     <list default="true" id="43293c60-5656-4a16-a560-ec00311af53c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/mini_sh.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/mini_sh.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/executor_1.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/executor_1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/executor_1.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper_functions_1.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/helper_functions_1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/init_env.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/init_env.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lexer.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/lexer.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nevermind.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/nevermind.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/parser.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/parser.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pompt.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/pompt.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/token.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/token.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,7 +159,8 @@
       <workItem from="1731075509965" duration="214000" />
       <workItem from="1731075730763" duration="4929000" />
       <workItem from="1731081497809" duration="587000" />
-      <workItem from="1731082534669" duration="1516000" />
+      <workItem from="1731082534669" duration="2076000" />
+      <workItem from="1731085155034" duration="1128000" />
     </task>
     <servers />
   </component>
@@ -178,7 +172,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/pompt.c</url>
-          <line>29</line>
+          <line>31</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

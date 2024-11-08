@@ -164,11 +164,11 @@ char        *ft_strndup(char *s1, size_t len);
 void	    free_table(t_msh *minish);
 void	    free_cmd(t_cmd *cmd);
 
-char	*ft_getenv(t_msh *mini, char *env);
-int	    ft_strcmp(char *s1, char *s2);
-void	replace_varname_wtih_var(char **expanded_string, char **env);
-void	append_remainder(char **expanded_string, char **content, int pos);
-char	**copy_env(char **envp);
-char	*check_and_expand_env(char **content, int *i, t_msh *minish);
-char	*check_string(char **content, t_msh *minish);
+char	    *ft_getenv(t_msh *mini, char *env);
+int	        ft_strcmp(char *s1, char *s2);
+void	    replace_varname_wtih_var(char **expanded_string, char **env);
+void	    append_remainder(char **expanded_string, char **content, int pos);
+char	    **copy_env(char **envp);
+char	    *check_and_expand_env(char **content, int *i, t_msh *minish);
+char	    *check_string(char **content, t_msh *minish);
 #endif
