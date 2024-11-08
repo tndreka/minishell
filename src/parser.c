@@ -41,10 +41,13 @@ void minishell_parser(char *prompt, t_msh *msh)
 //    {
 //    print_token(token_list);
 //    }
-    while (token_list)
-    {
+    // while (token_list)
+    // {
         i = pass_to_table(&token_list, msh, &table);
-    }
+		// printf("hello i is : %zu\n", i);
+
+	// 	token_list = token_list->next;
+    // }
     msh->table = table;
     msh->table_head = table;
 }
@@ -67,7 +70,6 @@ size_t pass_to_table(t_lexer **token_list, t_msh *msh, t_table **table)
 
     token = *token_list;
     count = 0;
-	
     while(token != NULL)
     {
         if(token->type== PIPE)
@@ -91,9 +93,9 @@ size_t pass_to_table(t_lexer **token_list, t_msh *msh, t_table **table)
         }
         else if (token->type == STRING || token->type == DOUBLE_QUOTE)
 		    expand_env_vars(&token->data, msh);
-		printf("hello\n");
 		
         add_tokens_to_table(*table, token);
+		printf("table: %s\n", token->data);
         count++;
         token = token->next;
     }
@@ -267,6 +269,7 @@ void	expand_env_vars(char **content, t_msh *minish)
         {
             free(*content);
             (*content) = ft_strdup(expanded_string);
+
             free(expanded_string);
             expanded_string = NULL;
         }

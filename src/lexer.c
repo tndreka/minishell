@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 14:08:19 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/08 17:15:01 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/08 20:02:49 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ t_lexer *tokenize_prompt(char *prompt)
            ft_strncpy(buffer, prompt + (i - len) , len);
            buffer[len] = '\0';
            current = create_tok(buffer, COMMAND);
+		   //current->type = STRING;
            add_token(&head, current);
            free(buffer);
        }
@@ -84,7 +85,7 @@ void double_qoute(char *prompt, char *quote_end, t_lexer **head, t_lexer **curre
    {
      
        tmp = handle_quote(&prompt[(*i)]);
-       (*current) = create_tok(tmp, STRING);
+       (*current) = create_tok(tmp, DOUBLE_QUOTE);
        add_token(head, (*current));
        free(tmp);
        (*i) = quote_end - prompt + 1;
