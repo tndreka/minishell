@@ -27,6 +27,9 @@
 # include <curses.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include  <limits.h>
+# include <fcntl.h>
+
 
 # define EXIT_SUCCESS 	0
 # define EXIT_FAILURE 	1
@@ -83,14 +86,6 @@ typedef struct t_command_table
 *** comand info , comand table
 *** input information.
 */
-//typedef struct s_msh
-//{
-//	char **env;
-//	char *input;
-//	t_comands *comands;
-//	t_lexer	  *list;
-//	t_token type;
-//}	t_msh;
 
 typedef struct s_minishell
 {
@@ -109,16 +104,9 @@ typedef struct s_minishell
 
 
 t_msh *init_minishell(int ac, char *av[], char *envp[]);
-t_msh *set_parameters(t_msh *msh);
 void minishell_parser(char *prompt, t_msh *msh);
-
-
-//loop
 void prompt(t_msh *msh);
-
-//enviroment
-char **create_env(char **envp);
-void free_env(t_msh *msh);
+t_lexer *tokenize_prompt(char *prompt);
 
 // LEXING
 int ft_isspace(char c); // chec if it is a white space
@@ -172,6 +160,15 @@ int         check_existing_var(char *newvar, t_msh *mini);
 void    	handle_shlvl(t_msh *mini, char sign);
 bool	    check_nl(char *content);
 bool		check_builtin(t_msh *minish);
+char        *ft_strndup(char *s1, size_t len);
+void	    free_table(t_msh *minish);
+void	    free_cmd(t_cmd *cmd);
 
-
+char	*ft_getenv(t_msh *mini, char *env);
+int	    ft_strcmp(char *s1, char *s2);
+void	replace_varname_wtih_var(char **expanded_string, char **env);
+void	append_remainder(char **expanded_string, char **content, int pos);
+char	**copy_env(char **envp);
+char	*check_and_expand_env(char **content, int *i, t_msh *minish);
+char	*check_string(char **content, t_msh *minish);
 #endif

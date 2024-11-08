@@ -38,7 +38,7 @@ int	ft_strcmp(char *s1, char *s2)
     return (*s1 - *s2);
 }
 
-char	*ft_getenv(t_mini *mini, char *env)
+char	*ft_getenv(t_msh *mini, char *env)
 {
     size_t	i;
     int		len;
@@ -86,7 +86,7 @@ char	**copy_env(char **envp)
 }
 
 
-char	*check_and_expand_env(char **content, int *i, t_mini *minish)
+char	*check_and_expand_env(char **content, int *i, t_msh *minish)
 {
     int		j;
     char	*temp;
@@ -111,7 +111,7 @@ char	*check_and_expand_env(char **content, int *i, t_mini *minish)
     return (temp);
 }
 
-char	*check_string(char **content, t_mini *minish)
+char	*check_string(char **content, t_msh *minish)
 {
     int		i;
     char	*expanded_string;

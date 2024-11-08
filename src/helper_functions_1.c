@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/executor.h"
+#include "../include/mini_sh.h"
 
 void	replace_env(t_msh *mini, char *path, char *env)
 {
@@ -289,7 +289,7 @@ t_msh	*init_mini_vars(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-	mini = malloc(sizeof(t_mini));
+	mini = malloc(sizeof(t_msh));
 	envp_cpy = copy_env(envp);
 	mini->env = envp_cpy;
 	mini->var_lst = NULL;
@@ -317,7 +317,7 @@ bool	ft_isnumber(char *content)
 	return (true);
 }
 
-void	free_mini(t_mini *mini, bool keep_env)
+void	free_mini(t_msh *mini, bool keep_env)
 {
 	if (mini->table_head)
 		free_table(mini);
@@ -353,6 +353,24 @@ void	handle_signals(void)
 	rl_catch_signals = 0;
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, sigint_handler);
+}
+
+char	*ft_strndup(char *s1, size_t len)
+{
+    size_t	j;
+    char	*cpy;
+
+    j = 0;
+    cpy = malloc(sizeof(char) * (len + 1));
+    if (!cpy)
+        return (NULL);
+    while (s1[j] && j < len)
+    {
+        cpy[j] = s1[j];
+        j++;
+    }
+    cpy[j] = '\0';
+    return (cpy);
 }
 
 int	check_existing_var(char *newvar, t_msh *mini)
@@ -478,7 +496,7 @@ bool	check_nl(char *content)
 	return (true);
 }
 
-bool    check_builtin(t_mini *minish)
+bool    check_builtin(t_msh *minish)
 {
 	char	*content;
 
@@ -505,4 +523,40 @@ bool    check_builtin(t_mini *minish)
 			return (false);
 		}
 	return (false);
+}
+
+void	free_table(t_msh *minish)
+{
+    t_table	*current;
+    t_table	*next;
+
+    next = NULL;
+    current = minish->table_head;
+    while (current)
+    {
+        next = current->next;
+        if (current->cmd_head)
+            free_cmd(current->cmd_head);
+        free(current);
+        current = next;
+    }
+    minish->table = NULL;
+    minish->table_head = NULL;
+}
+
+void	free_cmd(t_cmd *cmd)
+{
+    t_cmd	*current;
+    t_cmd	*next;
+
+    current = cmd;
+    next = NULL;
+    while (current)
+    {
+        next = current->next;
+        if (current->content)
+            free(current->content);
+        free(current);
+        current = next;
+    }
 }

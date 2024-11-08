@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 14:08:19 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/05 14:11:43 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/08 17:15:01 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,15 @@ void redirection_less(const char *prompt, t_lexer **head, t_lexer **current, int
 
 void double_qoute(char *prompt,char *quote_end, t_lexer **head, t_lexer **current, int *i);
 
-t_lexer *tokenize_prompt(char *prompt, t_msh *msh)
+t_lexer *tokenize_prompt(char *prompt)
 {
    char *buffer;
    t_lexer *head = NULL;
    t_lexer *current = NULL;
    size_t len = 0;
-   (void)msh;
 
-   //char *tmp;
    char *quote_end = NULL;
    int i = 0;
-   //int quote_len = 0;
-
    while (prompt[i])
    {
        while (prompt[i] && ft_isspace(prompt[i]))
@@ -82,12 +78,11 @@ t_lexer *tokenize_prompt(char *prompt, t_msh *msh)
 
 void double_qoute(char *prompt, char *quote_end, t_lexer **head, t_lexer **current, int *i)
 {
-   //int quote_len = 0;
    char *tmp;
    quote_end = ft_strchr((&prompt[(*i)]) , '\"');
    if (quote_end)
    {
-       //quote_len = quote_end - (prompt + (*i) - 1);
+     
        tmp = handle_quote(&prompt[(*i)]);
        (*current) = create_tok(tmp, STRING);
        add_token(head, (*current));

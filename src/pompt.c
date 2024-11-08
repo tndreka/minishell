@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pompt.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baylozzi <baylozzi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 16:16:58 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/05 13:38:05 by baylozzi         ###   ########.fr       */
+/*   Updated: 2024/11/08 17:09:42 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,17 @@ void prompt(t_msh *msh)
         if (prompt == NULL)
             break ;
         minishell_parser(prompt, msh);
-        if (minish->table && handle_redirections(minish) != -1)
-        {
-            if (!minish->table->rightpipe && check_builtin(minish))
-                executor(minish);
-            else
-                mini_main(minish);
-        }
-        restore_redirections(minish);
-        if (minish->table_head)
-            free_table(minish);
-    }
-    free_mini(minish, false);
-    return (0);
+	}
+    //     if (msh->table && handle_redirections(msh) != -1)
+    //     {
+    //         if (!msh->table->rightpipe && check_builtin(msh))
+    //             executor(msh);
+    //         else
+    //             mini_main(msh);
+    //     }
+    //     restore_redirections(msh);
+    //     if (msh->table_head)
+    //         free_table(msh);
+    // }
+    // free_mini(msh, false);
 }

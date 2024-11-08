@@ -31,10 +31,10 @@
 */
 
 
-void    leaks(void)
-{
-    system("leaks Minishell");
-}
+//void    leaks(void)
+//{
+//    system("leaks Minishell");
+//}
 //int main(int ac, char *av[], char *envp[])
 //{
 //	t_msh msh;

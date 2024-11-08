@@ -17,6 +17,11 @@
 	copy of the Enviroment Variables and return a copy
 	of it. 
 */
+t_msh *set_parameters(t_msh *msh);
+t_msh *init_minishell(int ac, char *av[], char *envp[]);
+char **create_env(char **envp);
+void free_env(t_msh *msh);
+
 t_msh *set_parameters(t_msh *msh)
 {
     msh->var_lst = NULL;
@@ -29,7 +34,6 @@ t_msh *set_parameters(t_msh *msh)
     msh->outfd = STDOUT_FILENO;
     return (msh);
 }
-
 
 t_msh *init_minishell(int ac, char *av[], char *envp[])
 {
