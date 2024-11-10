@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 14:08:19 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/08 20:02:49 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/10 16:51:34 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,9 @@ t_lexer *tokenize_prompt(char *prompt)
            double_qoute(prompt ,quote_end, &head, &current, &i);
        }
        else if (prompt[i] == '>')
-       {
            redirection(prompt, current, &head, &i);
-       }
        else if (prompt[i] == '<')
-       {
            redirection_less(prompt, &head, &current, &i);
-       }
        else if (prompt[i])
        {
            len = 0;
@@ -69,7 +65,7 @@ t_lexer *tokenize_prompt(char *prompt)
            ft_strncpy(buffer, prompt + (i - len) , len);
            buffer[len] = '\0';
            current = create_tok(buffer, COMMAND);
-		   //current->type = STRING;
+		   current->type = COMMAND;
            add_token(&head, current);
            free(buffer);
        }

@@ -33,23 +33,23 @@ void minishell_parser(char *prompt, t_msh *msh)
     size_t         i;
 
     i = 0;
+	(void)msh;
     token_list = check_prompt(prompt);
     headof_list = token_list;
     if(NULL == token_list)
         return;
-//    if (token_list)
-//    {
-//    print_token(token_list);
-//    }
-    // while (token_list)
-    // {
-        i = pass_to_table(&token_list, msh, &table);
+   	// if (token_list)
+   	// {
+   	// 	print_token(token_list);
+   	// }
+    while (token_list)
+    {
+		i = pass_to_table(&token_list, msh, &table);
 		// printf("hello i is : %zu\n", i);
-
-	// 	token_list = token_list->next;
-    // }
-    msh->table = table;
-    msh->table_head = table;
+		token_list = token_list->next;
+    }
+	msh->table = table;
+	msh->table_head = table;
 }
 
 t_lexer *check_prompt(char *prompt)
@@ -91,7 +91,7 @@ size_t pass_to_table(t_lexer **token_list, t_msh *msh, t_table **table)
             handle_type_of_redir_type2(token, msh);
             //    return count;
         }
-        else if (token->type == STRING || token->type == DOUBLE_QUOTE)
+        else if (token->type == COMMAND || token->type == DOUBLE_QUOTE)
 		    expand_env_vars(&token->data, msh);
 		
         add_tokens_to_table(*table, token);
@@ -119,7 +119,7 @@ size_t handle_type_of_redir(t_lexer *token, t_msh *msh)
 {
     if(token->next == NULL)
         return -1;
-    else if(token->next->type != STRING)
+    else if(token->next->type != COMMAND)
         return -1;
     else if(token->type == REDIRIN)
     {
@@ -195,7 +195,7 @@ void add_tokens_to_table(t_table *table, t_lexer *token)
     new_node = NULL;
     current = NULL;
     current_token = token;
-    if(current_token->type == STRING || current_token->type == DOUBLE_QUOTE)
+    if(current_token->type == COMMAND || current_token->type == DOUBLE_QUOTE)
     {
         if(!table)
             create_table(&table, false);
