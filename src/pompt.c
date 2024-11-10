@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 16:16:58 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/10 18:46:17 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/10 16:47:09 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,8 @@ void prompt(t_msh *msh)
         prompt = readline("Minishell~ ");
        // dont break from the minishell loop put error //
         minishell_parser(prompt, msh);
-		//printf("prompt: %s\n", prompt);
         if (msh->table && handle_redirections(msh) != -1)
          {
-			printf("table: %s\n", msh->table->command->content);
              if (!msh->table->rightpipe && check_builtin(msh))
                  executor(msh);
              else

@@ -1,9 +1,43 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expander.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/10 19:44:48 by tndreka           #+#    #+#             */
+/*   Updated: 2024/11/10 19:45:57 by tndreka          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 //
 // Created by Taulant Ndreka on 07/11/2024.
 //
 
 #include "../include/mini_sh.h"
 
+
+
+void	expand_env_vars(char **content, t_msh *minish)
+{
+	char	*expanded_string;
+
+	expanded_string = NULL;
+	while (1)
+	{
+		expanded_string = check_string(content, minish);
+		if (!expanded_string)
+			break ;
+		else
+		{
+			free(*content);
+			(*content) = ft_strdup(expanded_string);
+			free(expanded_string);
+			expanded_string = NULL;
+		}
+	}
+}
 void	append_remainder(char **expanded_string, char **content, int pos)
 {
     char	*temp;
