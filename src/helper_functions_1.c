@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper_functions.c                                 :+:      :+:    :+:   */
+/*   helper_functions_1.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: temil-da <temil-da@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 15:36:41 by temil-da          #+#    #+#             */
-/*   Updated: 2024/10/30 17:19:26 by temil-da         ###   ########.fr       */
+/*   Updated: 2024/11/10 23:58:51 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,9 +224,9 @@ int	handle_redirections(t_msh *mini)
 		fd = open(mini->in_redir, O_RDONLY);
 		if (fd < 0)
 		{
-			write(STDERR_FILENO, "mini: ", 11);
-			write(STDERR_FILENO, mini->in_redir, ft_strlen(mini->in_redir));
-			write(STDERR_FILENO, ": No such file or directory\n", 29);
+			//write(STDERR_FILENO, "mini: ", 11);
+			//write(STDERR_FILENO, mini->in_redir, ft_strlen(mini->in_redir));
+			//write(STDERR_FILENO, ": No such file or directory\n", 29);
 			mini->exit_code = 6;
 			mini->success = false;
 			mini->infd = fd;
@@ -245,7 +245,7 @@ int	handle_redirections(t_msh *mini)
 			fd = open(mini->out_redir, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd < 0)
 		{
-			write(STDERR_FILENO, "mini: Error opening output file\n", 38);
+			//write(STDERR_FILENO, "mini: Error opening output file\n", 38);
 			mini->exit_code = 7;
 			mini->success = false;
 			mini->outfd = fd;

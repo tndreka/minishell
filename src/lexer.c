@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 14:08:19 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/10 19:06:32 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/11 00:44:22 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,15 @@ void redirection(const char *prompt, t_lexer *current, t_lexer **head, int *i);
 
 void redirection_less(const char *prompt, t_lexer **head, t_lexer **current, int *i);
 
-void double_qoute(char *prompt,char *quote_end, t_lexer **head, t_lexer **current, int *i);
+void double_qoute(char *prompt, t_lexer **head, t_lexer **current, int *i);
+
+void create_command (char *prompt, t_lexer **head, t_lexer **current, int *i);
 
 t_lexer *tokenize_prompt(char *prompt)
 {
-   char *buffer;
    t_lexer *head = NULL;
    t_lexer *current = NULL;
-   size_t len = 0;
 
-   char *quote_end = NULL;
    int i = 0;
    while (prompt[i])
    {
@@ -39,43 +38,44 @@ t_lexer *tokenize_prompt(char *prompt)
            i++;
        }
        else if (prompt[i] =='\"')
-       {
-           i++;
-           double_qoute(prompt ,quote_end, &head, &current, &i);
-       }
+           double_qoute(prompt , &head, &current, &i);
        else if (prompt[i] == '>')
            redirection(prompt, current, &head, &i);
        else if (prompt[i] == '<')
            redirection_less(prompt, &head, &current, &i);
        else if (prompt[i])
-       {
-           len = 0;
-           while (prompt[i] && !ft_isspace(prompt[i]) && prompt[i] != '|' && prompt[i] != '<' && prompt[i] != '<')
-           {
-               len++;
-               i++;
-           }
-           buffer = malloc((len + 1) * sizeof(char));
-           if(!buffer)
-           {
-               perror("malloc for buffer at lexer() FAILED !!");
-               return NULL;
-
-           }
-           ft_strncpy(buffer, prompt + (i - len) , len);
-           buffer[len] = '\0';
-           current = create_tok(buffer, COMMAND);
-		   current->type = COMMAND;
-           add_token(&head, current);
-           free(buffer);
-       }
+        create_command(prompt, &head, &current, &i);
    }
    return head;
 }
 
-void double_qoute(char *prompt, char *quote_end, t_lexer **head, t_lexer **current, int *i)
+void create_command (char *prompt, t_lexer **head, t_lexer **current, int *i)
 {
+   size_t len = 0;
+   char *buffer;
+   while (prompt[(*i)] && !ft_isspace(prompt[(*i)]) && prompt[(*i)] != '|' && prompt[(*i)] != '<' && prompt[(*i)] != '>')
+   {
+       len++;
+       (*i)++;
+   }
+   buffer = malloc((len + 1) * sizeof(char));
+   if(!buffer)
+   {
+       perror("malloc for buffer at lexer() FAILED !!");
+       return ;
+   }
+   ft_strncpy(buffer, prompt + ((*i) - len) , len);
+   buffer[len] = '\0';
+   (*current) = create_tok(buffer, COMMAND);
+   add_token(head, (*current));
+   free(buffer);
+}
+
+void double_qoute(char *prompt, t_lexer **head, t_lexer **current, int *i)
+{
+    i++;
    char *tmp;
+   char *quote_end;
    quote_end = ft_strchr((&prompt[(*i)]) , '\"');
    if (quote_end)
    {
