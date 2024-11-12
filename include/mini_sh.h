@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 10:48:37 by tndreka           #+#    #+#             */
-/*   Updated: 2024/10/11 17:37:34 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/11 16:02:00 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,4 +171,5 @@ void	    append_remainder(char **expanded_string, char **content, int pos);
 char	    **copy_env(char **envp);
 char	    *check_and_expand_env(char **content, int *i, t_msh *minish);
 char	    *check_string(char **content, t_msh *minish);
+// void		trip_to_table_pipe(t_lexer *token, t_table *table);
 #endif
