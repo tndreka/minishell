@@ -57,8 +57,7 @@
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
-    "__locale": "c",
-    "iterator": "c",
-    "mini_sh.h": "c"
-  }
+	"mini_sh.h": "c",
+	"__locale": "c"
+}
 }
