@@ -78,44 +78,42 @@ void	minishell_parser(char *prompt, t_msh *msh)
 
 bool	pass_to_table(t_lexer **tkn_lst, t_msh *msh, t_table **table)
 {
-	//int		i;
 	t_token	token;
+	bool res = false;
 
-	//i = 0;
 	token = (*tkn_lst)->type;
 	//printf("Processing token type: %s\n", (char *)token);
 	if(tkn_lst == NULL || *tkn_lst == NULL){
-		 //printf("Error: tkn_lst or *tkn_lst is NULL\n");
+		 printf("Error: tkn_lst or *tkn_lst is NULL\n");
 		return (false);}
 	if (token == REDIROUT || token == REDIROUTAPP || token == REDIRIN)
 	{
-		 //printf("Handling redirection token\n");
-		if(handle_type_of_redir(tkn_lst, msh)){
-			//printf("Error: handle_type_of_redir failed\n");
-			return (false);}
+		printf("Handling redirection token\n");
+		res = handle_type_of_redir(&(*tkn_lst), msh);
+		printf("Error: handle_type_of_redir failed\n");
+		return (false);
 	}	
 	else if (token == COMMAND || token == DOUBLE_QUOTE)
 	{
-		 //printf("Handling command or double quote token\n");
-		if(!expand_env_vars(&(*tkn_lst)->data, msh)){
-			//printf("Error: expand_env_vars failed\n");
-			return (false);}
+		printf("Handling command or double quote token\n");
+		res = expand_env_vars(&(*tkn_lst)->data, msh);
+		printf("Error: expand_env_vars failed\n");
+		return (false);
 
 	}
 	else if (token == HEREDOC){
-		//printf("Handling heredoc token\n");
-		if(handle_type_of_redir_type2(tkn_lst, msh)){
-			//printf("Error: handle_type_of_redir_type2 failed\n");
-			return (false);}
+		printf("Handling heredoc token\n");
+		res = handle_type_of_redir_type2(tkn_lst, msh);
+		printf("Error: handle_type_of_redir_type2 failed\n");
+		return (false);
 		}
 	else if (token == PIPE){
-		//printf("Handling pipe token\n");
-		if(trip_to_table_pipe(*tkn_lst, *table, msh)){
-			//printf("Error: trip_to_table_pipe failed\n");
-			return (false);}
-		}
-	// if (i == -1)
-	// 	return (i);
+		printf("Handling pipe token\n");
+		res = trip_to_table_pipe(*tkn_lst, *table, msh);
+		printf("Error: trip_to_table_pipe failed\n");
+			return (false);
+	}
+	printf("Adding token to table\n");
 	add_tokens_to_table(table, *tkn_lst);
 	return (true);
 }
