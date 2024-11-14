@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 14:08:19 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/12 18:40:29 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/14 11:40:17 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	create_command(char *prompt, t_lexer **head, t_lexer **current, int *i)
 
 void double_qoute(char *prompt, t_lexer **head, t_lexer **current, int *i)
 {
-	i++;
+	(*i)++;
 	char *tmp;
 	char *quote_end;
 	quote_end = ft_strchr((&prompt[(*i)]), '\"');

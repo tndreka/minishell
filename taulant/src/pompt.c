@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 16:16:58 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/13 19:55:00 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/14 13:51:15 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,15 @@ void	prompt(t_msh *msh)
 	while (1)
 	{
 		prompt = readline("Minishell~ ");
-		if (prompt == NULL)
-		{
-			break ;
-		}
+		// if (prompt == NULL)
+		// {
+		// 	break ;
+		// }
 		minishell_parser(prompt, msh);
-		if (ft_strncmp(prompt, "exit", 4) == 0)
-		{
-			free(prompt);
-			//free(msh);==> we need to free the msh
-			break ;
-		}
-		if (*prompt)
-			add_history(prompt);
+		printf("after parser\n");
 		if (msh->table && handle_redirections(msh) != -1)
 		{
+			printf("before execution\n");
 			if (!msh->table->rightpipe && check_builtin(msh))
 				executor(msh);
 			else

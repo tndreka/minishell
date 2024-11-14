@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 15:09:14 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/13 20:25:46 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/14 14:19:12 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,30 +15,36 @@
 bool	token_to_table(t_lexer **token, t_table **table, t_msh *msh);
 bool	trip_to_table_pipe(t_lexer *token, t_table *table, t_msh *msh);
 bool	check_valid_pipe(t_lexer *token, t_table *table);
+void print_table_commands(t_table *table);
 
 void	minishell_parser(char *prompt, t_msh *msh)
 {
 	t_lexer	*token;
-	t_lexer	*head;
+	//t_lexer	*head;
 	t_table	*table;
 
 	(void)msh;
 	token = lexer(prompt);
-	if (token)
-	{
-		print_token(token);
-	}
-	head = token;
+	//head = token;
 	table = NULL;
 	if (!token)
 		return ;
 	while (token)
 	{
-		token_to_table(&token, &table, msh);
-		printf("here\n");
+		if(token_to_table(&token, &table, msh) == false)
+		{
+			printf("Error\n");
+			return ;
+		}
 		token = token->next;
 	}
-	free_token(token);
+	msh->table = table;
+	msh->table_head = table;
+	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~printing table commands ********\n");
+	print_table_commands(table);
+	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ finishing printing table commands ********\n");
+
+
 }
 
 bool	token_to_table(t_lexer **token, t_table **table, t_msh *msh)
@@ -48,26 +54,42 @@ bool	token_to_table(t_lexer **token, t_table **table, t_msh *msh)
 	temp = *token;
 	if (temp->type == PIPE)
 	{
-		printf("here2\n");
-		if (!trip_to_table_pipe(*token, *table, msh))
+		printf("before adding pipe to table\n");
+		if (trip_to_table_pipe(*token, *table, msh) == false)
 		{
-			printf("false main table function");
+			printf("false pipe");
 			return (false);
 		}
-		printf("here3\n");
+		printf("token pipe added to table\n");
+		//printf("here3\n");
 	}
 	else if (temp->type == COMMAND)
 	{
-		printf("here3333333\n");
-		if (!trip_to_table_commad(*token, *table, msh))
+		printf("=++++++++++++++++++ INSIDE IF COMMAND +++++++++++++++++++\n");
+		if (trip_to_table_commad(*token, *table, msh) == false)
 		{
-			printf("false main table function");
+			printf("!!!!!!!!!! COMMAND false main table function !!!!!!!!!!!!!\n");
 			return (false);
-			printf("here444444444\n");
+			// printf("here444444444\n");
 		}
+		printf("@@@@@@@@@@@@@@@@ token command added to table @@@@@@@@@@@@@@@\n");
+		// printf("here555555555\n");
 	}
-	msh->table = *table;
-	msh->table_head = *table;
-	printf("true 444555555555==========!!\n");
+	printf("=============== true ==========!!\n");
 	return (true);
+}
+
+void print_table_commands(t_table *table)
+{
+    t_table *current = table;
+	printf("PRINTING TABLE CMMANDS\n");
+    while (current)
+    {
+		printf("PRINTING TABLE CMMANDS debug\n");
+        if (current->command)
+        {
+            printf("Command: %s\n", current->command->content);
+        }
+        current = current->next;
+    }
 }

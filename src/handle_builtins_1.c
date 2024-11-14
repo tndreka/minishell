@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_builtins.c                                  :+:      :+:    :+:   */
+/*   handle_builtins_1.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: temil-da <temil-da@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 15:24:36 by temil-da          #+#    #+#             */
-/*   Updated: 2024/10/30 12:27:54 by temil-da         ###   ########.fr       */
+/*   Updated: 2024/11/14 13:27:45 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,11 @@ void	handle_pwd(t_msh *minish)
 		i++;
 	}
 	line = malloc(PATH_MAX);
+	// if (!line)
+	// {
+	// 	//do it later
+	// 	//free
+	// }
 	getcwd(line, PATH_MAX);
 	printf("%s\n", line);
 	free(line);

@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 12:39:54 by tndreka           #+#    #+#             */
-/*   Updated: 2024/03/19 17:36:28 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/14 12:05:36 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ char	*ft_strdup(char *s1)
 	size_t			i;
 	size_t			j;
 
+	if (!s1)
+		return (NULL);
 	i = 0;
 	while (s1[i])
 		i++;

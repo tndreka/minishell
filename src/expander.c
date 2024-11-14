@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 19:44:48 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/13 20:01:16 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/14 18:49:23 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 #include "../include/mini_sh.h"
 
-void	expand_env_vars(char **content, t_msh *minish)
+bool	expand_env_vars(char **content, t_msh *minish)
 {
 	char	*expanded_string;
 
@@ -28,12 +28,21 @@ void	expand_env_vars(char **content, t_msh *minish)
 			break ;
 		else
 		{
+			if (!expanded_string)
+				return (false);
+		
 			free(*content);
 			(*content) = ft_strdup(expanded_string);
+			if (!(*content))
+			{
+				free(expanded_string);
+				return (false);
+			}
 			free(expanded_string);
 			expanded_string = NULL;
 		}
 	}
+	return (true);
 }
 void	append_remainder(char **expanded_string, char **content, int pos)
 {

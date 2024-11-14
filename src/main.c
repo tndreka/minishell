@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 10:48:48 by tndreka           #+#    #+#             */
-/*   Updated: 2024/11/11 01:14:12 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/14 11:43:34 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	main(int ac, char *av[], char *envp[])
 {
 	t_msh	*minish;
 
+	handle_signals();
 	minish = init_minishell(ac, av, envp);
 	prompt(minish);
 }
