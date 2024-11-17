@@ -3,14 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: temil-da <temil-da@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:13:00 by temil-da          #+#    #+#             */
-/*   Updated: 2024/11/11 12:18:36 by temil-da         ###   ########.fr       */
+/*   Updated: 2024/11/17 17:09:51 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/parser.h"
+
+
+// bool exp_env_vars(char **content, t_mini *msh)
+// {
+// 	char *expanded_string;
+// 	char *prefix;
+// 	//char *env_exit_code;
+// 	int i = 0;	
+
+// 	(void)msh;
+// 	expanded_string = ft_strdup("");
+// 	while((*content)[i])
+// 	{
+// 		while ((*content)[i] && (*content)[i] != '$')
+// 		{
+// 			i++;
+// 		}
+// 		prefix = ft_strndup(*content, i);
+// 		expanded_string = ft_strjoin(expanded_string, prefix);
+// 		free(prefix);
+			
+// 	}
+// 	return (true);
+// }
 
 char	*check_and_expand_env(char **content, int *i, t_mini *minish)
 {
@@ -66,25 +90,25 @@ char	*check_string(char **content, t_mini *minish)
 	return (expanded_string);
 }
 
-void	expand_env_vars(char **content, t_mini *minish)
-{
-	char	*expanded_string;
+// void	exp_env_vars(char **content, t_mini *minish)
+// {
+// 	char	*expanded_string;
 
-	expanded_string = NULL;
-	while (1)
-	{
-		expanded_string = check_string(content, minish);
-		if (!expanded_string)
-			break ;
-		else
-		{
-			free(*content);
-			(*content) = ft_strdup(expanded_string);
-			free(expanded_string);
-			expanded_string = NULL;
-		}
-	}
-}
+// 	expanded_string = NULL;
+// 	while (1)
+// 	{
+// 		expanded_string = check_string(content, minish);
+// 		if (!expanded_string)
+// 			break ;
+// 		else
+// 		{
+// 			free(*content);
+// 			(*content) = ft_strdup(expanded_string);
+// 			free(expanded_string);
+// 			expanded_string = NULL;
+// 		}
+// 	}
+// }
 
 bool	heredoc_loop(char *delimiter, int fd)
 {

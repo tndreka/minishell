@@ -12,14 +12,20 @@
 /* ************************************************************************** */
 
 #include "../include/mini_sh.h"
-
+int	ft_strcmp(char *s1, char *s2);
 t_lexer	*tokenize_prompt(char *prompt);
-bool		pass_to_table(t_lexer **token_list, t_msh *msh, t_table **table);
-int		trip_to_table_pipe(t_lexer *token_lst, t_table *table, t_msh *msh);
-int		handle_type_of_redir(t_lexer **token_lst, t_msh *msh);
-int		handle_type_of_redir_type2(t_lexer **token_lst, t_msh *msh);
-bool	expand_env_vars(char **content, t_msh *minish);
-int		loop(char *separator, int fd);
+bool	pass_to_table(t_lexer **token_list, t_msh *msh, t_table **table);
+bool	pas_to_table_pipe(t_lexer *token_lst, t_table *table, t_msh *msh);
+bool 	check_valid(t_lexer *token_lst, t_table *table, t_msh *msh);
+
+bool	pas_to_table_redir(t_lexer **token_lst, t_msh *msh);
+//int		trip_to_table_pipe(t_lexer *token_lst, t_table *table, t_msh *msh);
+//int		handle_type_of_redir(t_lexer **token_lst, t_msh *msh);
+//int		handle_type_of_redir_type2(t_lexer **token_lst, t_msh *msh);
+bool	pas_to_table_heredoc(t_lexer **token_lst, t_msh *msh);
+bool	exp_env_vars(char *content, t_msh *minish);
+bool 	loop(char *separator, int fd);
+//int		loop(char *separator, int fd);
 void	add_tokens_to_table(t_table **table, t_lexer *token);
 void	create_table(t_table **table, bool leftpipe);
 void	create_cmd_table(t_table **table, char *data);
@@ -45,6 +51,7 @@ void	minishell_parser(char *prompt, t_msh *msh)
 		return ;
 	while (tkn_lst)
 	{
+			printf("HERE=====\n");
 		if (!pass_to_table(&tkn_lst, msh, &table))
 		{
 			printf("Error\n");
@@ -76,47 +83,85 @@ void	minishell_parser(char *prompt, t_msh *msh)
 	// msh->table = table;
 	// msh->table_head = table;
 
-bool	pass_to_table(t_lexer **tkn_lst, t_msh *msh, t_table **table)
+// bool	pass_to_table(t_lexer **tkn_lst, t_msh *msh, t_table **table)
+// {
+// 	t_token	token;
+// 	bool res = false;
+
+// 	token = (*tkn_lst)->type;
+// 	//printf("Processing token type: %s\n", (char *)token);
+// 	if(tkn_lst == NULL || *tkn_lst == NULL){
+// 		 printf("Error: tkn_lst or *tkn_lst is NULL\n");
+// 		return (false);}
+// 	if (token == REDIROUT || token == REDIROUTAPP || token == REDIRIN)
+// 	{
+// 		printf("Handling redirection token\n");
+// 		res = handle_type_of_redir(&(*tkn_lst), msh);
+// 		printf("Error: handle_type_of_redir failed\n");
+// 		return (false);
+// 	}	
+// 	else if (token == COMMAND || token == DOUBLE_QUOTE)
+// 	{
+// 		printf("Handling command or double quote token\n");
+// 		expand_env_vars(&(*tkn_lst)->data, msh);
+
+// 	}
+// 	else if (token == HEREDOC){
+// 		printf("Handling heredoc token\n");
+// 		res = handle_type_of_redir_type2(tkn_lst, msh);
+// 		printf("Error: handle_type_of_redir_type2 failed\n");
+// 		return (false);
+// 		}
+// 	else if (token == PIPE){
+// 		printf("Handling pipe token\n");
+// 		res = trip_to_table_pipe(*tkn_lst, *table, msh);
+// 		printf("Error: trip_to_table_pipe failed\n");
+// 			return (false);
+// 	}
+// 	printf("Adding token to table\n");
+// 	add_tokens_to_table(table, *tkn_lst);
+// 	return (true);
+// }
+
+bool pass_to_table(t_lexer **token, t_msh *minish, t_table **table)
 {
-	t_token	token;
-	bool res = false;
+    bool res = true;
 
-	token = (*tkn_lst)->type;
-	//printf("Processing token type: %s\n", (char *)token);
-	if(tkn_lst == NULL || *tkn_lst == NULL){
-		 printf("Error: tkn_lst or *tkn_lst is NULL\n");
-		return (false);}
-	if (token == REDIROUT || token == REDIROUTAPP || token == REDIRIN)
-	{
-		printf("Handling redirection token\n");
-		res = handle_type_of_redir(&(*tkn_lst), msh);
-		printf("Error: handle_type_of_redir failed\n");
-		return (false);
-	}	
-	else if (token == COMMAND || token == DOUBLE_QUOTE)
-	{
-		printf("Handling command or double quote token\n");
-		res = expand_env_vars(&(*tkn_lst)->data, msh);
-		printf("Error: expand_env_vars failed\n");
-		return (false);
+		printf("----------->HERE\n");
+	printf("Token type: %d, Token data: %s\n", (*token)->type, (*token)->data);
+    if ((*token)->type == STRING || (*token)->type == DOUBLE_QUOTE)
+    {
+		printf("======HEre");
+		  printf("Calling exp_env_vars with data: %s\n", (*token)->data);
+        if (!exp_env_vars((*token)->data, minish))
+			return false;
+    }
+    else if ((*token)->type == PIPE)
+    {
+        res = pas_to_table_pipe(*token, *table, minish);
+    }
+    else if ((*token)->type == HEREDOC)
+    {
+        res = pas_to_table_heredoc(token, minish);
+    }
+    else if ((*token)->type == REDIRIN || (*token)->type == REDIROUT || (*token)->type == REDIROUTAPP)
+    {
+        res = pas_to_table_redir(token, minish);
+    }
+    // else if ((*token)->type == REDIROUTAPP)
+    // {
+    //     res = pas_to_table_redirapp(*token, minish);
+    // }
+    if (!res)
+    {
+        printf("Error: Handling token type %d failed\n", (*token)->type);
+        return false;
+    }
 
-	}
-	else if (token == HEREDOC){
-		printf("Handling heredoc token\n");
-		res = handle_type_of_redir_type2(tkn_lst, msh);
-		printf("Error: handle_type_of_redir_type2 failed\n");
-		return (false);
-		}
-	else if (token == PIPE){
-		printf("Handling pipe token\n");
-		res = trip_to_table_pipe(*tkn_lst, *table, msh);
-		printf("Error: trip_to_table_pipe failed\n");
-			return (false);
-	}
-	printf("Adding token to table\n");
-	add_tokens_to_table(table, *tkn_lst);
-	return (true);
+    add_tokens_to_table(table, *token);
+    return true;
 }
+
 	//t_lexer	*token;
 
 	// token = *token_list;
@@ -131,32 +176,32 @@ bool	pass_to_table(t_lexer **tkn_lst, t_msh *msh, t_table **table)
 	// 	expand_env_vars(&token->data, msh);
 	// add_tokens_to_table(table, *token_list);
 
-int checd_valid(t_lexer *token_lst, t_table *table, t_msh *msh)
+bool check_valid(t_lexer *token_lst, t_table *table, t_msh *msh)
 {
 	if (token_lst->type == PIPE && !table)
 	{
 		write_err(msh, 11, token_lst->data);
-		return (-1);
+		return (false);
 	}
 	else if (token_lst->type == PIPE && !token_lst->next)
 	{
 		write_err(msh, 10, NULL);
-		return (-1);
+		return (false);
 	}
 	else if (token_lst->type == PIPE && token_lst->next->type != COMMAND)
 	{
 		write_err(msh, 12, token_lst->next->data);
-		return (-1);
+		return (false);
 	}
 	return (0);
 }
 
-int	trip_to_table_pipe(t_lexer *token_lst, t_table *table, t_msh *msh)
+bool	pas_to_table_pipe(t_lexer *token_lst, t_table *table, t_msh *msh)
 {
 	t_table	*new_node;
 	t_table	*current_node;
 
-	checd_valid(token_lst, table, msh);
+	check_valid(token_lst, table, msh);
 	current_node = table;
 	while (current_node && current_node->next)
 		current_node = current_node->next;
@@ -164,7 +209,7 @@ int	trip_to_table_pipe(t_lexer *token_lst, t_table *table, t_msh *msh)
 	if (!new_node)
 	{
 		perror("malloc");
-		return -1;
+		return (false);
 	}
 	new_node->leftpipe = true;
 	new_node->rightpipe = false;
@@ -179,7 +224,7 @@ int	trip_to_table_pipe(t_lexer *token_lst, t_table *table, t_msh *msh)
 	{
 		table = new_node;
 	}
-	return (0);
+	return (true);
 }
 // }
 // {
@@ -209,12 +254,12 @@ int	trip_to_table_pipe(t_lexer *token_lst, t_table *table, t_msh *msh)
 	// return (0);
 //}
 
-int	handle_type_of_redir(t_lexer **token_lst, t_msh *msh)
+bool	pas_to_table_redir(t_lexer **token_lst, t_msh *msh)
 {
 	if ((*token_lst)->next == NULL)
-		return (write_err(msh, 8, NULL), -1);
+		return (write_err(msh, 8, NULL), false);
 	else if ((*token_lst)->next->type != COMMAND)
-		return (write_err(msh, 9, (*token_lst)->next->data), -1);
+		return (write_err(msh, 9, (*token_lst)->next->data), false);
 	if ((*token_lst)->type == REDIRIN)
 	{
 		if (msh->in_redir)
@@ -230,7 +275,7 @@ int	handle_type_of_redir(t_lexer **token_lst, t_msh *msh)
 	(*token_lst)->next->type = FILENAME;
 	if ((*token_lst)->type == REDIROUTAPP)
 		msh->append_mode = true;
-	return (0);
+	return (true);
 }
 	// if (token->next == NULL)
 	// 	return ;
@@ -252,7 +297,7 @@ int	handle_type_of_redir(t_lexer **token_lst, t_msh *msh)
 	// if (token->type == REDIROUTAPP)
 	// 	msh->append_mode = true;
 
-int	handle_type_of_redir_type2(t_lexer **token_lst, t_msh *msh)
+bool	pas_to_table_heredoc(t_lexer **token_lst, t_msh *msh)
 {
 	int		fd;
 	char	*separator;
@@ -274,10 +319,10 @@ int	handle_type_of_redir_type2(t_lexer **token_lst, t_msh *msh)
 	free(separator);
 	separator = NULL;
 	close(fd);
-	return (0);
+	return (true);
 }
 
-int	loop(char *separator, int fd)
+bool	loop(char *separator, int fd)
 {
 	char	*here;
 
@@ -287,7 +332,7 @@ int	loop(char *separator, int fd)
 	{
 		free(here);
 		here = NULL;
-		return (-1);
+		return (false);
 	}
 	else
 	{
@@ -295,7 +340,7 @@ int	loop(char *separator, int fd)
 		write(fd, "\n", 1);
 		free(here);
 		here = NULL;
-		return (0);
+		return (true);
 	}
 }
 
@@ -497,3 +542,43 @@ void	write_arg_err(int code, char *arg)
 		write(STDERR_FILENO, ": command not found\n", 21);
 	}
 }
+
+// int	ft_strcmp(char *s1, char *s2)
+// {
+//    while (*s1 == *s2 && *s1 && *s2)
+//    {
+//        ++s1;
+//        ++s2;
+//    }
+//    return (*s1 - *s2);
+// }
+// bool check_dolla_sign(char **content, int *i, char **expanded_string, t_msh *msh)
+// {
+
+	
+// 	if ((*content)[*i] == '?')
+// 	{
+// 		env_exit_code = ft_itoa(msh->exit_code);
+// 		*expanded_string = ft_strjoin(*expanded_string, env_exit_code);
+// 		*i = *i + 2;
+// 		free(env_exit_code);
+// 		return(true);
+// 	}
+// 	else if (*content[*i] == '$')
+// 	{
+// 		(*i)++;
+// 		start = (*i + 1);
+// 		while(isalnum(*content[*i]) || *content[*i] == '_')
+// 			(*i)++;
+// 		variable_name = ft_strndup(*content + start, *i - start);
+// 		get_value = ft_getenv(msh, variable_name);
+// 		free(variable_name);
+// 		if (get_value)
+// 		{
+// 			*expanded_string = ft_strjoin(*expanded_string, get_value);
+// 			free(get_value);
+// 		}
+// 		return true;
+// 	}
+// 	return false;
+// }
