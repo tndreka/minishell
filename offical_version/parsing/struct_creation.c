@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   struct_creation.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 17:16:25 by temil-da          #+#    #+#             */
-/*   Updated: 2024/11/17 16:54:27 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/18 01:05:19 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,9 @@
 
 void	add_token_to_table(t_table **table, t_lexer *token_lst)
 {
-	t_table	*new_node;
 	t_table	*current_node;
 	t_token	token;
 
-	new_node = NULL;
 	current_node = NULL;
 	token = token_lst->type;
 	if (token == STRING || token == DOUBLE_QUOTE || token == SINGLE_QUOTE)
@@ -51,7 +49,6 @@ void	create_cmd_table(t_table **table, char *content)
 	t_cmd	*new_node;
 	t_cmd	*current_node;
 
-	new_node = NULL;
 	current_node = NULL;
 	new_node = malloc(sizeof(t_cmd));
 	if (!new_node)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 14:43:06 by temil-da          #+#    #+#             */
-/*   Updated: 2024/11/17 18:14:39 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/18 01:12:54 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,21 +42,18 @@ void	minishell_parser(char *prompt, t_mini *msh)
 //** This function will check the type of the token and call the appropriate
 bool	pass_token_to_table(t_lexer **token, t_mini *minish, t_table **table)
 {	
-	bool res;
-
-	res = true;
     if ((*token)->data == NULL)
         return false;
     if ((*token)->type == STRING || (*token)->type == DOUBLE_QUOTE || (*token)->type == SINGLE_QUOTE)
     {
-        res = exp_env_vars(&(*token)->data, minish);
+        exp_env_vars(&(*token)->data, minish);
 		add_token_to_table(table, *token);	
     }
 	else if ((*token)->type == PIPE)
-		res = handle_pipe(*token, minish, *table);
+		handle_pipe(*token, minish, *table);
 	else if ((*token)->type == REDIRIN || (*token)->type == REDIROUT || (*token)->type == REDIROUTAPP)
     {
-        res = handle_redir(token, minish, table);
+        handle_redir(token, minish, table);
     }
 	return (true);
 }
@@ -163,26 +160,88 @@ bool handle_pipe(t_lexer *token, t_mini *minish, t_table *table)
 
 //=============================== COMMANF & ENV_VAR =================================
 
-bool exp_env_vars(char **content, t_mini *msh)
+// bool exp_env_vars(char **content, t_mini *msh)
+// {
+// 	char *expanded_string;
+// 	char *prefix;
+// 	int i = 0;	
+// 	// int j = 0;
+// 	(void)msh;	
+// 	// expanded_string = ft_strdup("");
+// 	while((*content)[i])
+// 	{
+// 		while ((*content)[i] && (*content)[i] != '$')
+// 			i++;
+// 		prefix = ft_strndup(*content, i);
+// 		expanded_string = ft_strjoin(expanded_string, prefix);
+// 		free(prefix);
+// 	}
+// 	return (true);
+// }
+bool exp_env_vars(char **content, t_mini *minish)
 {
-	char *expanded_string;
-	char *prefix;
-	char *env_exit_code;
-	int i = 0;	
-	int j = 0;
-	// expanded_string = ft_strdup("");
-	while((*content)[i])
-	{
-		while ((*content)[i] && (*content)[i] != '$')
-			i++;
-		if (NULL == (*content)[i])
-			return false;
-		prefix = ft_strndup(*content, i);
-		expanded_string = ft_strjoin(expanded_string, prefix);
-		free(prefix);
-		
-		
-	}
+    char *expanded_string;
+    char *env;
+    int i, j;
+    char *temp, *temp2;
+
+    expanded_string = NULL;
+    while (1)
+    {
+        i = 0;
+        env = NULL;
+        expanded_string = NULL;
+        
+        // Check string and expand environment variables
+        while ((*content)[i] && (*content)[i] != '$')
+            i++;
+        if (!(*content)[i])
+            break;
+        
+        expanded_string = ft_strndup(*content, i);
+        i++;
+        if ((*content)[i] == '?')
+        {
+            env = ft_itoa(minish->exit_code);
+            i++;
+        }
+        else
+        {
+            j = 0;
+            temp = NULL;
+            while ((*content)[i])
+            {
+                if (ft_isalnum((*content)[i]) == 1 || (*content)[i] == '_')
+                {
+                    i++;
+                    j++;
+                }
+                else
+                    break;
+            }
+            temp2 = ft_strndup((*content) + (i - j), j);
+            temp = ft_getenv(minish, temp2);
+            free(temp2);
+            temp2 = NULL;
+            env = temp;
+        }
+        
+        if (env)
+            replace_varname_wtih_var(&expanded_string, &env);
+        if ((*content)[i])
+            append_remainder(&expanded_string, content, i);
+
+        // Update content
+        if (!expanded_string)
+            break;
+        else
+        {
+            free(*content);
+            (*content) = ft_strdup(expanded_string);
+            free(expanded_string);
+            expanded_string = NULL;
+        }
+    }
 	return (true);
 }
 //===================================================================================
@@ -190,10 +249,9 @@ bool exp_env_vars(char **content, t_mini *msh)
 //========================== REDIRECTIONS ===========================================
 bool handle_redir(t_lexer **token, t_mini *minish, t_table **table)
 {
-	t_table	*new_node;
 	t_table	*current_node;
-	new_node = NULL;
-	current_node = NULL;
+	// new_node = NULL;
+	// current_node = NULL;
 	if ((*token)->next == NULL)
 		return (write_err(minish, 8, NULL), false);
 	else if ((*token)->next->type != STRING)
