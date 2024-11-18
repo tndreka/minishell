@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 15:13:00 by temil-da          #+#    #+#             */
-/*   Updated: 2024/11/18 02:19:42 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/18 02:23:26 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,94 +17,125 @@ void free_and_assign(char **dst, char *src);
 char *get_env_value(t_mini *minish, const char *var_name);
 char *expand_var(t_mini *minish, const char *content, int *i);
 
+#include <stdlib.h>
+#include <string.h>
+
+// Assuming these functions are provided
+// char *ft_strndup(const char *s, size_t n);
+// char *ft_strdup(const char *s);
+// char *ft_strjoin(char const *s1, char const *s2);
+// char *ft_itoa(int n);
+// char *ft_getenv(t_mini *minish, const char *name);
+// int ft_isalnum(int c);
+// int ft_strcmp(const char *s1, const char *s2);
+
 bool exp_env_vars(char **content, t_mini *msh)
 {
-	char *expanded_string;
-	
-	while (1)
-	{
-		expanded_string = handle_content(content, msh);
-		if(ft_strcmp(*content, expanded_string) == 0)
-		{
-			free(expanded_string);
-			break;
-		}
-		free_and_assign(content, expanded_string);
-	}
-	return (true);
+    char *expanded_string;
+
+    while (1)
+    {
+        expanded_string = handle_content(content, msh);
+        if (ft_strcmp(*content, expanded_string) == 0)
+        {
+            free(expanded_string);
+            break;
+        }
+        free_and_assign(content, expanded_string);
+    }
+    return true;
 }
 
 char *handle_content(char **content, t_mini *msh)
 {
-	char *expanded_string;
-	char *env;
-	char *temp;
-	int i;
-	int end_pos;
+    char *expanded_string;
+    char *env;
+    char *temp;
+    int i;
+    int last_pos;
 
-	i = 0;
-	end_pos = 0;
-	expanded_string = ft_strdup("");
-	while(content[i])
-	{
-		if ((*content)[i] == '$')
-		{
-			temp = ft_strndup(*content + end_pos, i - end_pos);
-			free_and_assign(&expanded_string, ft_strjoin(expanded_string, temp));
-			free(temp);
-			
-			if (content[i])
-			{
-				env = expand_var(msh, (*content), &i);
-				if (env)
-				free_and_assign(&expanded_string, ft_strjoin(expanded_string, env));
-			}
-		}
-		else if ((*content)[i + 1] == '?')
-		{
-			temp = ft_itoa(msh->exit_code);
-			free_and_assign(&expanded_string, ft_strjoin(expanded_string, temp));
-			free(temp);
-			i += 2;
-		}
-		else
-		{
-			i++;
-		}
-		end_pos = i;
-	}
-	return (expanded_string);
+    i = 0;
+    last_pos = 0;
+    expanded_string = ft_strdup("");
+
+    while ((*content)[i])
+    {
+        if ((*content)[i] == '$')
+        {
+            temp = ft_strndup(*content + last_pos, i - last_pos);
+            free_and_assign(&expanded_string, ft_strjoin(expanded_string, temp));
+            free(temp);
+
+            i++;
+            if ((*content)[i] == '?')
+            {
+                env = ft_itoa(msh->exit_code);
+                i++;
+            }
+            else
+            {
+                env = expand_var(msh, *content, &i);
+            }
+
+            if (env)
+            {
+                free_and_assign(&expanded_string, ft_strjoin(expanded_string, env));
+                free(env);
+            }
+
+            last_pos = i;
+        }
+        else
+        {
+            i++;
+        }
+    }
+
+    if (last_pos < i)
+    {
+        temp = ft_strdup(*content + last_pos);
+        free_and_assign(&expanded_string, ft_strjoin(expanded_string, temp));
+        free(temp);
+    }
+
+    return expanded_string;
 }
 
-void free_and_assign(char **dst, char *src) {
+void free_and_assign(char **dst, char *src)
+{
     free(*dst);
     *dst = src;
 }
 
-char *get_env_value(t_mini *minish, const char *var_name) {
-    if (strcmp(var_name, "?") == 0) {
-        return ft_itoa(minish->exit_code);
-    }
-    return ft_getenv(minish, var_name);
-}
-
-char *expand_var(t_mini *minish, const char *content, int *i) {
+char *expand_var(t_mini *minish, const char *content, int *i)
+{
     int start = *i;
     int len = 0;
     char *var_name;
     char *env_value;
 
-    while (ft_isalnum(content[*i + len]) || content[*i + len] == '_') {
+    while (ft_isalnum(content[*i + len]) || content[*i + len] == '_')
+    {
         len++;
     }
 
-	var_name = ft_strndup(content + start , len);
+    var_name = ft_strndup(content + start, len);
     env_value = get_env_value(minish, var_name);
     free(var_name);
 
     *i += len;
     return env_value;
 }
+
+char *get_env_value(t_mini *minish, const char *var_name)
+{
+    if (strcmp(var_name, "?") == 0)
+    {
+        return ft_itoa(minish->exit_code);
+    }
+    return ft_getenv(minish, var_name);
+}
+
 //=========================================================
 // bool exp_env_vars(char **content, t_mini *msh)
 // {
