@@ -3,16 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 14:43:06 by temil-da          #+#    #+#             */
-/*   Updated: 2024/11/18 02:16:43 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/18 19:35:36 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/parser.h"
 bool	pass_token_to_table(t_lexer **token, t_mini *minish, t_table **table);
 bool	handle_redir(t_lexer **token, t_mini *minish, t_table **table);
+void 	add_redir_to_table(t_lexer **token, t_table **table);
+void	check_dollar(t_dollar_param *param);
+void	free_and_assign(char **dst, char *src);
+char 	*handle_content(char **content, t_mini *msh);
+char	*expand_var(t_mini *msh, const char *content, int *i);
+char	*ft_get_env_value(t_mini *msh, const char *var_name);
 //** This function will call the lexer function and pass the tokens to the parser
 void	minishell_parser(char *prompt, t_mini *msh)
 {
@@ -42,56 +48,27 @@ void	minishell_parser(char *prompt, t_mini *msh)
 //** This function will check the type of the token and call the appropriate
 bool	pass_token_to_table(t_lexer **token, t_mini *minish, t_table **table)
 {	
+	bool res;
+
+	res = true;
     if ((*token)->data == NULL)
         return false;
     if ((*token)->type == STRING || (*token)->type == DOUBLE_QUOTE || (*token)->type == SINGLE_QUOTE)
     {
-        exp_env_vars(&(*token)->data, minish);
+        res = exp_env_vars(&(*token)->data, minish);
 		add_token_to_table(table, *token);	
     }
 	else if ((*token)->type == PIPE)
-		handle_pipe(*token, minish, *table);
+		res = handle_pipe(*token, minish, *table);
 	else if ((*token)->type == REDIRIN || (*token)->type == REDIROUT || (*token)->type == REDIROUTAPP)
     {
-        handle_redir(token, minish, table);
+        res = handle_redir(token, minish, table);
     }
 	return (true);
 }
 
 //==============================================================================
 
-// int	check_valid_redir_input(t_lexer **token_lst, t_mini *minish)
-// {
-// 	int	fd;
-
-// 	fd = 0;
-// 	if ((*token_lst)->next == NULL)
-// 		return (write_err(minish, 8, NULL), -1);
-// 	else if ((*token_lst)->next->type != STRING)
-// 		return (write_err(minish, 9, (*token_lst)->next->data), -1);
-// 	if ((*token_lst)->type == REDIRIN)
-// 	{
-// 		if (minish->in_redir)
-// 			free(minish->in_redir);
-// 		minish->in_redir = ft_strdup((*token_lst)->next->data);
-// 	}
-// 	else if ((*token_lst)->type == REDIROUT || (*token_lst)->type == REDIROUTAPP)
-// 	{
-// 		if (minish->out_redir)
-// 		{
-// 			fd = open(minish->out_redir, O_CREAT, 0644);
-// 			if (fd < 0)
-// 				return (write_err(minish, 7, NULL), -1);
-// 			close(fd);
-// 			free(minish->out_redir);
-// 		}
-// 		minish->out_redir = ft_strdup((*token_lst)->next->data);
-// 	}
-// 	(*token_lst)->next->type = FILENAME;
-// 	if ((*token_lst)->type == REDIROUTAPP)
-// 		minish->append_mode = true;
-// 	return (0);
-// }
 // int	handle_heredoc(t_lexer **token_lst, t_mini *minish)
 // {
 // 	char	*delimiter;
@@ -160,182 +137,114 @@ bool handle_pipe(t_lexer *token, t_mini *minish, t_table *table)
 
 //=============================== COMMANF & ENV_VAR =================================
 
-// bool exp_env_vars(char **content, t_mini *msh)
-// {
-// 	char *expanded_string;
-// 	char *prefix;
-// 	int i = 0;	
-// 	// int j = 0;
-// 	(void)msh;	
-// 	// expanded_string = ft_strdup("");
-// 	while((*content)[i])
-// 	{
-// 		while ((*content)[i] && (*content)[i] != '$')
-// 			i++;
-// 		prefix = ft_strndup(*content, i);
-// 		expanded_string = ft_strjoin(expanded_string, prefix);
-// 		free(prefix);
-// 	}
-// 	return (true);
-// }
-// bool exp_env_vars(char **content, t_mini *minish)
-// {
-//     char *expanded_string;
-//     char *env;
-//     int i, j;
-//     char *temp, *temp2;
+bool exp_env_vars(char **content, t_mini *msh)
+{
+	char		*exp_string;
+	while (1)
+	{
+		exp_string = handle_content(content, msh);
+		if(ft_strcmp(*content, exp_string) == 0)
+		{
+			free(exp_string);
+			break;
+		}
+		free_and_assign(content, exp_string);
+	}
+	return(true);
+}
 
-//     expanded_string = NULL;
-//     while (1)
-//     {
-//         i = 0;
-//         env = NULL;
-//         expanded_string = NULL;
-        
-//         // Check string and expand environment variables
-//         while ((*content)[i] && (*content)[i] != '$')
-//             i++;
-//         if (!(*content)[i])
-//             break;
-        
-//         expanded_string = ft_strndup(*content, i);
-//         i++;
-//         if ((*content)[i] == '?')
-//         {
-//             env = ft_itoa(minish->exit_code);
-//             i++;
-//         }
-//         else
-//         {
-//             j = 0;
-//             temp = NULL;
-//             while ((*content)[i])
-//             {
-//                 if (ft_isalnum((*content)[i]) == 1 || (*content)[i] == '_')
-//                 {
-//                     i++;
-//                     j++;
-//                 }
-//                 else
-//                     break;
-//             }
-//             temp2 = ft_strndup((*content) + (i - j), j);
-//             temp = ft_getenv(minish, temp2);
-//             free(temp2);
-//             temp2 = NULL;
-//             env = temp;
-//         }
-        
-//         if (env)
-//             replace_varname_wtih_var(&expanded_string, &env);
-//         if ((*content)[i])
-//             append_remainder(&expanded_string, content, i);
+char *handle_content(char **content, t_mini *msh)
+{
+	char	*str;
+	int		i;
+	int		last_pos;
+	char 	*tmp;
+	t_dollar_param param;
+	
+	i = 0;
+	last_pos = 0;
+	str = ft_strdup("");
+	param.content = content;
+	param.i = &i;
+	param.last_pos = &last_pos;
+	param.str = &str;
+	param.msh = msh;
+	while ((*content)[i])
+	{
+		if ((*content)[i] == '$')
+			check_dollar(&param);
+		else
+			i++;
+	}
+	if(last_pos < i)
+	{
+		tmp = ft_strdup((*content) + last_pos);
+		free_and_assign(&str, ft_strjoin(str, tmp));
+		free(tmp);
+	}
+	return (str);
+}
+void	check_dollar(t_dollar_param *param)
+{
+	char *temp;
+	char *env;
+	
+	temp = ft_strndup((*(param->content) + *(param->last_pos)), (*(param->i) - *(param->last_pos)));
+	free_and_assign(param->str, ft_strjoin(*(param->str), temp));
+	free(temp);
+	(*(param->i))++;
+	if((*(param->content))[*(param->i)] == '?')
+	{
+		env = ft_itoa(param->msh->exit_code);		
+		(*(param->i))++;
+	}
+	else
+		env = expand_var(param->msh, *(param->content), param->i);
+	if (env)
+	{
+		free_and_assign(param->str, ft_strjoin(*(param->str), env));
+		free(env);
+	}
+	*(param->last_pos) = *(param->i);
+}
 
-//         // Update content
-//         if (!expanded_string)
-//             break;
-//         else
-//         {
-//             free(*content);
-//             (*content) = ft_strdup(expanded_string);
-//             free(expanded_string);
-//             expanded_string = NULL;
-//         }
-//     }
-// 	return (true);
-// }
-//------------------- full function -------------------
-// bool exp_env_vars(char **content, t_mini *minish)
-// {
-//     char *expanded_string;
-//     char *env;
-//     int i, j;
-//     char *temp, *temp2;
+void free_and_assign(char **dst, char *src)
+{
+	free(*dst);
+	*dst = src;
+}
 
-//     expanded_string = NULL;
-//     while (1)
-//     {
-//         i = 0;
-//         env = NULL;
-//         expanded_string = NULL;
+char *expand_var(t_mini *msh, const char *content, int *i)
+{
+	int		start;
+	int		len;
+	char	*var_name;
+	char 	*env_value;
 
-//         // Find the next '$' in the content
-//         while ((*content)[i] && (*content)[i] != '$')
-//             i++;
-//         if (!(*content)[i])
-//             break;
-
-//         // Duplicate the string up to the '$'
-//         expanded_string = ft_strndup(*content, i);
-//         i++;
-//         if ((*content)[i] == '?')
-//         {
-//             env = ft_itoa(minish->exit_code);
-//             i++;
-//         }
-//         else
-//         {
-//             j = 0;
-//             temp = NULL;
-//             while ((*content)[i])
-//             {
-//                 if (ft_isalnum((*content)[i]) == 1 || (*content)[i] == '_')
-//                 {
-//                     i++;
-//                     j++;
-//                 }
-//                 else
-//                     break;
-//             }
-//             temp2 = ft_strndup((*content) + (i - j), j);
-//             temp = ft_getenv(minish, temp2);
-//             free(temp2);
-//             temp2 = NULL;
-//             env = temp;
-//         }
-
-//         // Replace variable name with its value
-//         if (env)
-//         {
-//             temp = ft_strdup(expanded_string);
-//             free(expanded_string);
-//             expanded_string = ft_strjoin(temp, env);
-//             free(temp);
-//             free(env);
-//             env = NULL;
-//         }
-
-//         // Append the remainder of the string
-//         if ((*content)[i])
-//         {
-//             temp = ft_strdup(expanded_string);
-//             free(expanded_string);
-//             expanded_string = ft_strjoin(temp, (*content) + i);
-//             free(temp);
-//         }
-
-//         // Update content
-//         if (!expanded_string)
-//             break;
-//         else
-//         {
-//             free(*content);
-//             (*content) = ft_strdup(expanded_string);
-//             free(expanded_string);
-//             expanded_string = NULL;
-//         }
-//     }
-// 	return (true);
-// }
+	start = *i;
+	len = 0;
+	while (ft_isalnum(content[*i + len]) || content[*i + len] == '_')
+		len++;
+	var_name = ft_strndup(content + start, len);
+	env_value = ft_get_env_value(msh, var_name);
+	free(var_name);
+	*i += len;
+	return (env_value);
+}
+char *ft_get_env_value(t_mini *msh, const char *var_name)
+{
+	if(ft_strcmp(var_name, "?") == 0)
+		return (ft_itoa(msh->exit_code));
+	else
+		return (ft_getenv(msh, var_name));
+}
 
 //===================================================================================
 
 //========================== REDIRECTIONS ===========================================
 bool handle_redir(t_lexer **token, t_mini *minish, t_table **table)
 {
-	t_table	*current_node;
-	// new_node = NULL;
-	// current_node = NULL;
+	
 	if ((*token)->next == NULL)
 		return (write_err(minish, 8, NULL), false);
 	else if ((*token)->next->type != STRING)
@@ -355,6 +264,17 @@ bool handle_redir(t_lexer **token, t_mini *minish, t_table **table)
 	(*token)->next->type = FILENAME;
 	if ((*token)->type == REDIROUTAPP)
 		minish->append_mode = true;
+	add_redir_to_table(token, table);
+	return (true);
+}
+
+void add_redir_to_table(t_lexer **token, t_table **table)
+{
+	t_table	*new_node;
+	t_table	*current_node;
+	
+	new_node = NULL;
+	current_node = NULL;
 	if ((*token)->type == STRING || (*token)->type == DOUBLE_QUOTE || (*token)->type == SINGLE_QUOTE)
 	{
 		if (!(*table))
@@ -364,7 +284,6 @@ bool handle_redir(t_lexer **token, t_mini *minish, t_table **table)
 			current_node = current_node->next;
 		create_cmd_table(&current_node, (*token)->data);
 	}
-	return (true);
 }
 // ==================================================================================
 

@@ -1,0 +1,9 @@
+Makefile
+execution
+includes
+lexing
+main.c
+main.o
+minishell
+o2
+parsing
