@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 14:43:06 by temil-da          #+#    #+#             */
-/*   Updated: 2024/11/18 01:12:54 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/18 01:28:40 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,72 @@ bool handle_pipe(t_lexer *token, t_mini *minish, t_table *table)
 // 	}
 // 	return (true);
 // }
+// bool exp_env_vars(char **content, t_mini *minish)
+// {
+//     char *expanded_string;
+//     char *env;
+//     int i, j;
+//     char *temp, *temp2;
+
+//     expanded_string = NULL;
+//     while (1)
+//     {
+//         i = 0;
+//         env = NULL;
+//         expanded_string = NULL;
+        
+//         // Check string and expand environment variables
+//         while ((*content)[i] && (*content)[i] != '$')
+//             i++;
+//         if (!(*content)[i])
+//             break;
+        
+//         expanded_string = ft_strndup(*content, i);
+//         i++;
+//         if ((*content)[i] == '?')
+//         {
+//             env = ft_itoa(minish->exit_code);
+//             i++;
+//         }
+//         else
+//         {
+//             j = 0;
+//             temp = NULL;
+//             while ((*content)[i])
+//             {
+//                 if (ft_isalnum((*content)[i]) == 1 || (*content)[i] == '_')
+//                 {
+//                     i++;
+//                     j++;
+//                 }
+//                 else
+//                     break;
+//             }
+//             temp2 = ft_strndup((*content) + (i - j), j);
+//             temp = ft_getenv(minish, temp2);
+//             free(temp2);
+//             temp2 = NULL;
+//             env = temp;
+//         }
+        
+//         if (env)
+//             replace_varname_wtih_var(&expanded_string, &env);
+//         if ((*content)[i])
+//             append_remainder(&expanded_string, content, i);
+
+//         // Update content
+//         if (!expanded_string)
+//             break;
+//         else
+//         {
+//             free(*content);
+//             (*content) = ft_strdup(expanded_string);
+//             free(expanded_string);
+//             expanded_string = NULL;
+//         }
+//     }
+// 	return (true);
+// }
 bool exp_env_vars(char **content, t_mini *minish)
 {
     char *expanded_string;
@@ -191,13 +257,14 @@ bool exp_env_vars(char **content, t_mini *minish)
         i = 0;
         env = NULL;
         expanded_string = NULL;
-        
-        // Check string and expand environment variables
+
+        // Find the next '$' in the content
         while ((*content)[i] && (*content)[i] != '$')
             i++;
         if (!(*content)[i])
             break;
-        
+
+        // Duplicate the string up to the '$'
         expanded_string = ft_strndup(*content, i);
         i++;
         if ((*content)[i] == '?')
@@ -225,11 +292,26 @@ bool exp_env_vars(char **content, t_mini *minish)
             temp2 = NULL;
             env = temp;
         }
-        
+
+        // Replace variable name with its value
         if (env)
-            replace_varname_wtih_var(&expanded_string, &env);
+        {
+            temp = ft_strdup(expanded_string);
+            free(expanded_string);
+            expanded_string = ft_strjoin(temp, env);
+            free(temp);
+            free(env);
+            env = NULL;
+        }
+
+        // Append the remainder of the string
         if ((*content)[i])
-            append_remainder(&expanded_string, content, i);
+        {
+            temp = ft_strdup(expanded_string);
+            free(expanded_string);
+            expanded_string = ft_strjoin(temp, (*content) + i);
+            free(temp);
+        }
 
         // Update content
         if (!expanded_string)
@@ -244,6 +326,7 @@ bool exp_env_vars(char **content, t_mini *minish)
     }
 	return (true);
 }
+
 //===================================================================================
 
 //========================== REDIRECTIONS ===========================================
