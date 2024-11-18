@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:27:42 by temil-da          #+#    #+#             */
-/*   Updated: 2024/11/14 16:37:55 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/18 02:11:58 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void	redirection_less(const char *prompt, t_lexer **head, t_lexer **current,
 void	redirection(const char *prompt, t_lexer *current, t_lexer **head,
 		int *i);
 // // HELPER FUNCTIONS
-char	*ft_strndup(char *s1, size_t len);
+char	*ft_strndup(const char *s1, size_t len);
 void	free_tkn_lst(t_lexer *token_lst);
 int	ft_isspace(char c);
 char	*ft_strncpy(char *dst, const char *src, size_t n);

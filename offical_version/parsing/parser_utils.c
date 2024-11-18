@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: temil-da <temil-da@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 16:16:12 by temil-da          #+#    #+#             */
-/*   Updated: 2024/10/30 18:00:33 by temil-da         ###   ########.fr       */
+/*   Updated: 2024/11/18 02:08:11 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	ft_strcmp(char *s1, char *s2)
 	return (*s1 - *s2);
 }
 
-char	*ft_getenv(t_mini *mini, char *env)
+char	*ft_getenv(t_mini *mini, const char *env)
 {
 	size_t	i;
 	int		len;

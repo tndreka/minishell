@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tndreka <tndreka@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:32:53 by temil-da          #+#    #+#             */
-/*   Updated: 2024/11/17 17:09:29 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/18 02:19:14 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@
 // MAIN PARSING FUNCTIONS
 void	minishell_parser(char *prompt, t_mini *msh);
 bool	pass_token_to_table(t_lexer **token, t_mini *minish, t_table **table);
-bool 	exp_env_vars(char **content, t_mini *msh);
+bool    exp_env_vars(char **content, t_mini *msh);
 //int		handle_token(t_lexer **tkn_lst, t_mini *minish, t_table **table);
 //int		check_valid_redir_input(t_lexer **token_lst, t_mini *minish);
-int		handle_heredoc(t_lexer **token_lst, t_mini *minish);
-bool	heredoc_loop(char *delimiter, int fd);
+//int		handle_heredoc(t_lexer **token_lst, t_mini *minish);
+//bool	heredoc_loop(char *delimiter, int fd);
 //int		check_valid_pipe(t_lexer *tkn_lst, t_table *table, t_mini *minish);
 //bool 	exp_env_vars(char **content, t_mini *msh);
 // char	*check_string(char **content, t_mini *minish);
@@ -41,7 +41,7 @@ bool put_to_table_pipe(t_table **table, t_lexer **token, t_mini *minish);
 bool check_valid_pipe(t_lexer *token, t_table *table, t_mini *minish);
 // PARSING UTILS
 int		ft_strcmp(char *s1, char *s2);
-char	*ft_getenv(t_mini *minish, char	*env);
+char	*ft_getenv(t_mini *minish, const char	*env);
 char	**copy_env(char **envp);
 void	append_remainder(char **expanded_string, char **content, int pos);
 void	replace_varname_wtih_var(char **expanded_string, char **temp);
