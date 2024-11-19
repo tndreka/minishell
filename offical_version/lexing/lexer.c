@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 14:43:06 by temil-da          #+#    #+#             */
-/*   Updated: 2024/11/18 19:59:28 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/19 14:20:54 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@ t_lexer	*lexer(char *prompt)
 		{
 			i++;
 			double_qoute(prompt, &head, &current, &i);
+		}
+		else if (prompt[i] == '\'')
+		{
+			i++;
+			single_qoute(prompt, &head, &current, &i);
 		}
 		else if (prompt[i] == '>')
 			redirection(prompt, current, &head, &i);
@@ -84,6 +89,8 @@ void	double_qoute(char *prompt, t_lexer **head, t_lexer **current, int *i)
 		free(tmp);
 		(*i) = quote_end - prompt + 1;
 	}
+	else
+		printf("Error\n");
 }
 
 void	redirection_less(const char *prompt, t_lexer **head, t_lexer **current,
@@ -119,4 +126,3 @@ void	redirection(const char *prompt, t_lexer *current, t_lexer **head,
 		(*i)++;
 	}
 }
-
