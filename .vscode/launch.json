@@ -6,8 +6,8 @@
       "type": "lldb",
       "request": "launch",
       "args": [],
-      "cwd": "/Users/tndreka/Desktop/mini_git_repo/",
-      "program": "/Users/tndreka/Desktop/mini_git_repo/Minishell"
+      "cwd": "/Users/tndreka/Desktop/mini_git_repo/final/",
+      "program": "/Users/tndreka/Desktop/mini_git_repo/final/Minishell"
     }
   ]
 }

@@ -6,7 +6,7 @@
 /*   By: tndreka <tndreka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 19:45:00 by temil-da          #+#    #+#             */
-/*   Updated: 2024/11/20 19:00:09 by tndreka          ###   ########.fr       */
+/*   Updated: 2024/11/21 17:38:01 by tndreka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	add_token(t_lexer **tokens, t_lexer *new_token)
 
 char	*handle_quote(char *prompt)
 {
+	char	*start = prompt + 1;
 	char	*end;
 	char	*string;
 
@@ -67,11 +68,11 @@ char	*handle_quote(char *prompt)
 	string = malloc(ft_strlen(prompt - 1));
 	if (!string)
 		return (NULL);
-	if (prompt && end)
-	{
-		ft_memmove(string, prompt, end - prompt);
+	//if (prompt && end)
+	//{
+		ft_memmove(string, start, end - start);
 		string[end - prompt] = '\0';
-	}
+	//}
 	return (string);
 }
 
