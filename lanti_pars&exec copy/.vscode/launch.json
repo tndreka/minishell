@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/tndreka/Desktop/lanti_pars&exec",
+      "program": "/Users/tndreka/Desktop/lanti_pars&exec/build/Debug/outDebug"
+    }
+  ]
+}
