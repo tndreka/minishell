@@ -1,0 +1,52 @@
+# Simple command and arguments
+/bin/ls
+ls -l
+echo hello
+echo "hello world"
+echo "$USER"
+exit
+exit 42
+
+# Check return value
+/bin/ls
+echo $?
+/bin/ls non_existent_file
+echo $?
+expr $? + $?
+
+# Signals
+ctrl-C
+ctrl-D
+ctrl-\
+
+# Quotes and redirection
+echo "cat lol.c | cat > lol.c"
+echo '$USER'
+echo "hello world"
+ls > out.txt
+cat < out.txt
+ls >> out.txt
+cat << EOF
+Hello
+EOF
+
+# Pipes
+cat file | grep pattern | wc
+ls | grep pattern | more
+
+# History
+dsbksdgbksdghsd
+echo "hello" | cat | wc -l
+
+# Environment variables
+export TEST_VAR=123
+echo $TEST_VAR
+unset TEST_VAR
+echo $TEST_VAR
+
+# cd and pwd
+cd /home
+pwd
+cd ..
+pwd
+cd nonexistent_dir
